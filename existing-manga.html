@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Existing Manga - MangaVerse</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container navbar-content">
+                <a href="index.html" class="logo">MangaVerse - Admin</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">View Site</a></li>
+                    <li><a href="admin-dashboard.html">Admin Dashboard</a></li>
+                    <li><a href="admin-management.html">Admin Management</a></li>
+                    <li><a href="manga-management.html">Manga Management</a></li>
+                    <li><a href="existing-manga.html" class="active">Existing Manga</a></li>
+                </ul>
+                <div class="user-actions">
+                    <!-- User profile will be populated by utils.js -->
+                </div>
+                <button class="hamburger-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="existing-manga">
+            <div class="container">
+                <h1>Existing Manga</h1>
+                
+                <!-- Search and Filter -->
+                <div class="admin-section">
+                    <h2>Search & Filter</h2>
+                    <div class="search-filters">
+                        <input type="text" id="search-manga" placeholder="Search manga by title or author...">
+                        <select id="genre-filter">
+                            <option value="all">All Genres</option>
+                            <option value="Action">Action</option>
+                            <option value="Adventure">Adventure</option>
+                            <option value="Fantasy">Fantasy</option>
+                            <option value="Supernatural">Supernatural</option>
+                            <option value="Superhero">Superhero</option>
+                            <option value="Dark Fantasy">Dark Fantasy</option>
+                        </select>
+                        <select id="sort-by">
+                            <option value="title">Sort by Title</option>
+                            <option value="author">Sort by Author</option>
+                            <option value="created_at">Sort by Date Added</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Manga List -->
+                <div class="admin-section">
+                    <h2>All Manga</h2>
+                    <div class="manga-list">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cover</th>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Genre</th>
+                                    <th>Chapters</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="manga-list-body">
+                                <!-- Manga items will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 MangaVerse. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="utils.js"></script>
+    <script type="module" src="existing-manga.js"></script>
+</body>
+</html>

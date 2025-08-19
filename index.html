@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MangaVerse - Read Your Favorite Manga</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container navbar-content">
+                <a href="index.html" class="logo">MangaVerse</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#manga-library">Library</a></li>
+                    <li><a href="#">Community</a></li>
+                </ul>
+                <div class="user-actions">
+                    <a href="login.html" class="login-btn">Login</a>
+                    <a href="signup.html" class="signup-btn">Sign Up</a>
+                </div>
+                <button class="hamburger-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="container">
+                <h1>Discover and Read Your Favorite Manga</h1>
+                <p>The ultimate destination for manga lovers. Dive into a vast library of titles.</p>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for manga...">
+                    <button>Search</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="manga-library">
+            <div class="container">
+                <h2>Manga Library</h2>
+                <div class="filters">
+                    <select id="genre-filter">
+                        <option value="all">All Genres</option>
+                        <option value="Action">Action</option>
+                        <option value="Adventure">Adventure</option>
+                        <option value="Fantasy">Fantasy</option>
+                        <option value="Supernatural">Supernatural</option>
+                        <option value="Superhero">Superhero</option>
+                        <option value="Dark Fantasy">Dark Fantasy</option>
+                    </select>
+                    <select id="sort-by">
+                        <option value="rating">Sort by Rating</option>
+                        <option value="title">Sort by Title</option>
+                        <option value="chapters">Sort by Chapters</option>
+                    </select>
+                </div>
+                <div class="manga-grid">
+                    <!-- Manga cards will be dynamically inserted here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 MangaVerse. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Load utils first, then main script -->
+    <script src="utils.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

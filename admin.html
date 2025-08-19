@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MangaVerse</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container navbar-content">
+                <a href="index.html" class="logo">MangaVerse - Admin</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">View Site</a></li>
+                    <li><a href="admin-dashboard.html">Admin Dashboard</a></li>
+                    <li><a href="admin-management.html">Admin Management</a></li>
+                    <li><a href="manga-management.html">Manga Management</a></li>
+                    <li><a href="existing-manga.html">Existing Manga</a></li>
+                </ul>
+                <div class="user-actions">
+                    <button id="logout-btn" class="login-btn">Logout</button>
+                </div>
+                <button class="hamburger-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="admin-dashboard">
+            <div class="container">
+                <h1>Admin Dashboard</h1>
+
+                <!-- Admin Management -->
+                <div class="admin-section" id="admin-management">
+                    <h2>Admin Management</h2>
+                    <form id="add-admin-form">
+                        <h3>Add New Admin</h3>
+                        <input type="email" id="admin-email" placeholder="Admin Email" required>
+                        <button type="submit">Add Admin</button>
+                    </form>
+                    <div class="admin-list">
+                        <h3>Current Admins</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Added Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-list-body">
+                                <!-- Admin items will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Manga Management -->
+                <div class="admin-section" id="manga-management">
+                    <h2>Manga Management</h2>
+                    <form id="add-manga-form">
+                        <h3>Add New Manga</h3>
+                        <input type="text" id="manga-title" placeholder="Manga Title" required>
+                        <input type="text" id="manga-author" placeholder="Author" required>
+                        <input type="text" id="manga-genre" placeholder="Genre" required>
+                        <textarea id="manga-description" placeholder="Description"></textarea>
+                        <label for="manga-cover-file">Cover Image</label>
+                        <input type="file" id="manga-cover-file" accept="image/*">
+                        <button type="submit">Add Manga</button>
+                    </form>
+                </div>
+
+                <!-- Existing Manga -->
+                <div class="admin-section" id="existing-manga">
+                    <div class="manga-list">
+                        <h2>Existing Manga</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Genre</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="manga-list-body">
+                                <!-- Manga items will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 MangaVerse. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Load utils first, then admin script -->
+    <script type="module" src="admin.js"></script>
+</body>
+</html>

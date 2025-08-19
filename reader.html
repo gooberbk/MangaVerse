@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga Reader - MangaVerse</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="reader-body">
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo">MangaVerse</a>
+            <span class="manga-title-header">Manga Title - Chapter 1</span>
+            <div class="reader-settings">
+                <select id="chapter-select"></select>
+                <button id="zoom-in">Zoom In</button>
+                <button id="zoom-out">Zoom Out</button>
+                <button id="dark-mode-toggle">Dark Mode</button>
+                <a href="manga.html" class="exit-reader">Exit</a>
+            </div>
+        </div>
+    </nav>
+
+    <main id="reader-main">
+        <div class="manga-pages">
+            <!-- Manga pages will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <nav class="reader-nav">
+        <button id="prev-page-btn">Previous</button>
+        <span id="page-indicator">Page 1 / X</span>
+        <button id="next-page-btn">Next</button>
+    </nav>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 MangaVerse. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Load utils first, then reader script -->
+    <script type="module" src="reader.js"></script>
+</body>
+</html>

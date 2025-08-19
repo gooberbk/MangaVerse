@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga Management - MangaVerse</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container navbar-content">
+                <a href="index.html" class="logo">MangaVerse - Admin</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">View Site</a></li>
+                    <li><a href="admin-dashboard.html">Admin Dashboard</a></li>
+                    <li><a href="admin-management.html">Admin Management</a></li>
+                    <li><a href="manga-management.html" class="active">Manga Management</a></li>
+                    <li><a href="existing-manga.html">Existing Manga</a></li>
+                </ul>
+                <div class="user-actions">
+                    <!-- User profile will be populated by utils.js -->
+                </div>
+                <button class="hamburger-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="manga-management">
+            <div class="container">
+                <h1>Manga Management</h1>
+                
+                <!-- Add New Manga -->
+                <div class="admin-section">
+                    <h2>Add New Manga</h2>
+                    <form id="add-manga-form">
+                        <input type="text" id="manga-title" placeholder="Manga Title" required>
+                        <input type="text" id="manga-author" placeholder="Author" required>
+                        <input type="text" id="manga-genre" placeholder="Genre" required>
+                        <textarea id="manga-description" placeholder="Description" rows="4"></textarea>
+                        <label for="manga-cover-file">Cover Image</label>
+                        <input type="file" id="manga-cover-file" accept="image/*">
+                        <button type="submit">Add Manga</button>
+                    </form>
+                </div>
+
+                <!-- Edit Manga Form (Hidden by default) -->
+                <div class="admin-section" id="edit-manga-section" style="display: none;">
+                    <h2>Edit Manga</h2>
+                    <form id="edit-manga-form">
+                        <input type="hidden" id="edit-manga-id">
+                        <input type="text" id="edit-manga-title" placeholder="Manga Title" required>
+                        <input type="text" id="edit-manga-author" placeholder="Author" required>
+                        <input type="text" id="edit-manga-genre" placeholder="Genre" required>
+                        <textarea id="edit-manga-description" placeholder="Description" rows="4"></textarea>
+                        <label for="edit-manga-cover-file">Cover Image (optional)</label>
+                        <input type="file" id="edit-manga-cover-file" accept="image/*">
+                        <div class="form-actions">
+                            <button type="submit">Update Manga</button>
+                            <button type="button" id="cancel-edit-btn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 MangaVerse. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="utils.js"></script>
+    <script type="module" src="manga-management.js"></script>
+</body>
+</html>
