@@ -31,5 +31,3 @@ A custom manga reading website project featuring a clean design, smooth chapter 
 - User authentication system
 - Responsive design for mobile and desktop
 
-## Security Note
-⚠️ **Important**: Never commit your actual Supabase credentials to version control. Always use the example file as a template and keep your real credentials in `supabaseClient.js` which is gitignored.
