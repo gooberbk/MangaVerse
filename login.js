@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const user = await signIn(email, password);
                 if (user) {
-                    window.location.href = 'admin.html';
+                    window.location.href = 'index.html';
                 }
             } catch (error) {
                 alert(`Login failed: ${error.message}`);

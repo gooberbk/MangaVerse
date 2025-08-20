@@ -29,27 +29,4 @@ export const getUser = async () => {
   return data.user;
 };
 
-export const isAdmin = async () => {
-  try {
-    const user = await getUser();
-    if (!user) return false;
-
-    // Check database for admin status
-    const { data, error } = await supabase
-      .from('admin_users')
-      .select('id')
-      .eq('user_id', user.id)
-      .single();
-
-    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-      console.error('Error checking admin status:', error);
-      return false;
-    }
-
-    return !!data;
-  } catch (error) {
-    console.error('Error in isAdmin:', error);
-    return false;
-  }
-};
 
