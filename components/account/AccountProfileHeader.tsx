@@ -24,7 +24,7 @@ export function AccountProfileHeader({
   return (
     <div
       className={cn(
-        "glass relative overflow-hidden rounded-2xl p-6 shadow-lg shadow-black/20 sm:p-8",
+        "glass-panel rounded-2xl p-6 sm:p-8",
         className,
       )}
     >

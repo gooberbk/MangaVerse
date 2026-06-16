@@ -12,7 +12,9 @@ export function DangerZonePanel({ className }: DangerZonePanelProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   return (
-    <div className={cn("glass rounded-2xl p-6 shadow-lg shadow-black/20 sm:p-8", className)}>
+    <div className={cn("glass-panel rounded-2xl p-6 sm:p-8", className)}>
+      {/* Glow accent */}
+      <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-accent-red/8 blur-3xl" />
       <div className="mb-6">
         <h2 className="text-xl font-bold text-white">Danger Zone</h2>
         <p className="mt-1 text-sm text-muted">

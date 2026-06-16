@@ -19,15 +19,17 @@ export function AccountSettingsPanel({ className }: AccountSettingsPanelProps) {
   }
 
   return (
-    <div className={cn("glass rounded-2xl p-6 shadow-lg shadow-black/20 sm:p-8", className)}>
-      <div className="mb-6">
+    <div className={cn("glass-panel rounded-2xl p-6 sm:p-8", className)}>
+      {/* Glow accent */}
+      <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-accent-purple/10 blur-3xl" />
+      <div className="relative mb-6">
         <h2 className="text-xl font-bold text-white">Account Settings</h2>
         <p className="mt-1 text-sm text-muted">
           Update your account information and preferences
         </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="relative space-y-6">
         {/* Display name */}
         <div className="space-y-2">
           <label htmlFor="displayName" className="block text-sm font-medium text-white">

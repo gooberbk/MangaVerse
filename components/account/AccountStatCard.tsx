@@ -16,7 +16,7 @@ export function AccountStatCard({
   return (
     <div
       className={cn(
-        "glass flex min-w-[8rem] flex-col gap-1 rounded-xl px-4 py-3 shadow-lg shadow-black/20",
+        "glass-panel flex min-w-[8rem] flex-col gap-1 rounded-xl px-4 py-3",
         className,
       )}
     >
