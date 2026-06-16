@@ -1,0 +1,347 @@
+import type { Manga } from "@/types/manga";
+
+export const mockMangas: Manga[] = [
+  {
+    id: "1",
+    slug: "neon-eclipse",
+    title: "Neon Eclipse",
+    description:
+      "In a city where memories can be stolen and sold, a lone investigator hunts the syndicate rewriting history one mind at a time.",
+    synopsis:
+      "Detective Ren Kaito patrols the neon-drenched district of Meridian City, where illegal memory brokers strip citizens of their pasts and auction them to the highest bidder. When a string of erased witnesses points to a syndicate called Eclipse, Ren must decide how much of himself he is willing to lose to expose the truth. Each case peels back another layer of a conspiracy that may have already rewritten his own childhood. The deeper he dives, the more the city itself seems to remember things he never lived.",
+    alternativeTitles: ["ネオン・エクリプス", "Neon Eclipse: Memory Protocol"],
+    author: "Kaito Ren",
+    artist: "Yui Nakamura",
+    coverGradient: "from-violet-600 via-fuchsia-500 to-rose-500",
+    genres: ["Sci-Fi", "Mystery", "Action"],
+    status: "ongoing",
+    demographic: "Seinen",
+    language: "English",
+    releaseYear: 2021,
+    rating: { average: 9.4, count: 12840 },
+    views: 2840000,
+    totalBookmarks: 412000,
+    chapterCount: 142,
+    updatedAt: "2026-06-14T18:00:00.000Z",
+    isTrending: true,
+    isNew: false,
+    isFeatured: true,
+  },
+  {
+    id: "2",
+    slug: "crimson-horizon",
+    title: "Crimson Horizon",
+    description:
+      "Two rival sword schools clash as an ancient demon awakens beneath the capital. Honor and betrayal shape a dying empire.",
+    synopsis:
+      "The Ashfall Empire stands on the brink of collapse as two legendary sword schools — the Dawn Lotus and the Iron Vein — compete for the throne's favor. Beneath the imperial palace, an ancient seal weakens, releasing a demon whose whispers turn brother against brother. Young duelist Sora Miyake is caught between duty to her school and a forbidden alliance that could save the capital or doom it forever. Every duel draws the empire closer to either rebirth or ruin.",
+    alternativeTitles: ["クリムゾン・ホライズン", "Crimson Horizon: Blade of the Empire"],
+    author: "Sora Miyake",
+    artist: "Haruto Ishida",
+    coverGradient: "from-red-700 via-rose-600 to-orange-500",
+    genres: ["Fantasy", "Action", "Drama"],
+    status: "ongoing",
+    demographic: "Shōnen",
+    language: "English",
+    releaseYear: 2019,
+    rating: { average: 9.1, count: 9620 },
+    views: 1950000,
+    totalBookmarks: 287000,
+    chapterCount: 98,
+    updatedAt: "2026-06-13T12:00:00.000Z",
+    isTrending: true,
+    isNew: false,
+    isFeatured: false,
+  },
+  {
+    id: "3",
+    slug: "starfall-academy",
+    title: "Starfall Academy",
+    description:
+      "At an elite academy orbiting a dying star, students wield cosmic magic while uncovering a galaxy-spanning conspiracy.",
+    synopsis:
+      "Starfall Academy floats in orbit around a collapsing star, training the next generation of cosmic mages to harness dying light as power. First-year student Luna Aris discovers that the academy's founders hid a map to a forbidden dimension inside the graduation trials. As classmates vanish during practice missions, Luna and her team must unravel a conspiracy that stretches from the academy council to distant colony worlds. The star above them grows dimmer with every secret they uncover.",
+    alternativeTitles: ["スターフォール・アカデミー", "Starfall Academy: Dying Light"],
+    author: "Luna Aris",
+    artist: "Mei Tanaka",
+    coverGradient: "from-blue-600 via-indigo-500 to-violet-600",
+    genres: ["Fantasy", "School", "Adventure"],
+    status: "ongoing",
+    demographic: "Shōnen",
+    language: "English",
+    releaseYear: 2022,
+    rating: { average: 8.8, count: 7340 },
+    views: 1420000,
+    totalBookmarks: 198000,
+    chapterCount: 76,
+    updatedAt: "2026-06-15T09:30:00.000Z",
+    isTrending: false,
+    isNew: true,
+    isFeatured: false,
+  },
+  {
+    id: "4",
+    slug: "midnight-bloom",
+    title: "Midnight Bloom",
+    description:
+      "A florist with the power to grow flowers from emotions navigates love and supernatural clients in a rain-soaked port city.",
+    synopsis:
+      "In the rain-soaked port city of Haru Bay, florist Hana Watanabe cultivates blossoms that bloom from pure emotion — joy, grief, longing, and regret. Her shop becomes a refuge for humans and spirits alike, each client carrying a story that takes root in her garden. When a mysterious patron requests a flower that has not been grown in a century, Hana must confront the one feeling she has always refused to feel. Every petal holds a memory someone is not ready to let go.",
+    alternativeTitles: ["ミッドナイト・ブルーム", "Midnight Bloom: Garden of Feelings"],
+    author: "Hana Watanabe",
+    artist: "Aiko Mori",
+    coverGradient: "from-purple-800 via-pink-600 to-fuchsia-400",
+    genres: ["Romance", "Supernatural", "Slice of Life"],
+    status: "completed",
+    demographic: "Josei",
+    language: "English",
+    releaseYear: 2018,
+    rating: { average: 8.6, count: 5890 },
+    views: 980000,
+    totalBookmarks: 156000,
+    chapterCount: 64,
+    updatedAt: "2026-05-28T16:00:00.000Z",
+    isTrending: false,
+    isNew: false,
+    isFeatured: false,
+  },
+  {
+    id: "5",
+    slug: "iron-veil",
+    title: "Iron Veil",
+    description:
+      "Mech pilots defend the last human settlement behind a colossal energy barrier — until the enemy infiltrates from within.",
+    synopsis:
+      "Humanity's last settlement, Haven Prime, survives behind the Iron Veil — a colossal energy barrier powered by a reactor no one fully understands. Mech pilot Ryo Tanaka and his squad patrol the perimeter until sabotage from inside the walls suggests the enemy has already breached their defenses. As trust fractures among the commanders, Ryo races to identify the infiltrator before the Veil collapses. Outside, something vast waits in the wasteland, patient and hungry.",
+    alternativeTitles: ["アイアン・ヴェイル", "Iron Veil: Last Bastion"],
+    author: "Ryo Tanaka",
+    artist: "Kenji Sato",
+    coverGradient: "from-slate-700 via-blue-800 to-cyan-500",
+    genres: ["Mecha", "Sci-Fi", "Thriller"],
+    status: "ongoing",
+    demographic: "Seinen",
+    language: "English",
+    releaseYear: 2020,
+    rating: { average: 9.0, count: 8120 },
+    views: 1670000,
+    totalBookmarks: 224000,
+    chapterCount: 55,
+    updatedAt: "2026-06-12T20:00:00.000Z",
+    isTrending: true,
+    isNew: false,
+    isFeatured: false,
+  },
+  {
+    id: "6",
+    slug: "echoes-of-ash",
+    title: "Echoes of Ash",
+    description:
+      "After a volcanic apocalypse, survivors follow a mysterious radio signal through ash-choked ruins toward the Green Zone.",
+    synopsis:
+      "Ten years after the Caldera Event buried civilization under ash, survivor caravans cling to rumors of the Green Zone — a fertile region said to exist beyond the Scorched Belt. Radio operator Mika Sato picks up a repeating signal that seems to move, guiding groups through treacherous ruins and rival scavenger territories. When her brother's voice appears on the transmission, Mika must choose between the safety of her convoy and a journey that may be a trap. The ash remembers everyone who walked through it.",
+    alternativeTitles: ["エコーズ・オブ・アッシュ", "Echoes of Ash: Green Zone"],
+    author: "Mika Sato",
+    artist: "Rin Okada",
+    coverGradient: "from-amber-700 via-red-800 to-stone-900",
+    genres: ["Post-Apocalyptic", "Adventure", "Drama"],
+    status: "hiatus",
+    demographic: "Seinen",
+    language: "English",
+    releaseYear: 2017,
+    rating: { average: 8.4, count: 4210 },
+    views: 720000,
+    totalBookmarks: 98000,
+    chapterCount: 41,
+    updatedAt: "2026-04-02T10:00:00.000Z",
+    isTrending: false,
+    isNew: false,
+    isFeatured: false,
+  },
+  {
+    id: "7",
+    slug: "phantom-circuit",
+    title: "Phantom Circuit",
+    description:
+      "A street racer discovers his car is possessed by a legendary driver's ghost. Underground races where losing means everything.",
+    synopsis:
+      "Dex Vega rebuilds a wrecked racing chassis only to discover it carries the ghost of legendary driver Kai Mori, who died on the same track a decade ago. Together they enter the underground Phantom Circuit, where races are run on abandoned highways and defeat means forfeiting your machine — or your life. As Dex climbs the ranks, Kai's memories reveal a conspiracy that rigged the fatal crash that made him a legend. The finish line may be the only way to set them both free.",
+    alternativeTitles: ["ファントム・サーキット", "Phantom Circuit: Ghost Drive"],
+    author: "Dex Vega",
+    artist: "Taro Mizuno",
+    coverGradient: "from-cyan-500 via-blue-600 to-purple-700",
+    genres: ["Sports", "Supernatural", "Action"],
+    status: "ongoing",
+    demographic: "Shōnen",
+    language: "English",
+    releaseYear: 2023,
+    rating: { average: 8.7, count: 3680 },
+    views: 890000,
+    totalBookmarks: 112000,
+    chapterCount: 33,
+    updatedAt: "2026-06-15T14:00:00.000Z",
+    isTrending: false,
+    isNew: true,
+    isFeatured: false,
+  },
+  {
+    id: "8",
+    slug: "garden-of-lies",
+    title: "Garden of Lies",
+    description:
+      "In a utopian floating city, a journalist exposes the darkest secret behind every citizen's manufactured happiness.",
+    synopsis:
+      "Citadel Helios floats above the clouds, presenting itself as humanity's final utopia where algorithms curate every citizen's happiness index. Investigative journalist Elena Cross begins probing irregularities in the wellness data and uncovers a garden beneath the city where memories deemed 'harmful' are harvested and erased. Each article she publishes triggers cascading system failures in the happiness network. The closer she gets to the truth, the more her own past is rewritten by the city she swore to protect.",
+    alternativeTitles: ["ガーデン・オブ・ライズ", "Garden of Lies: Helios Report"],
+    author: "Elena Cross",
+    artist: "Saki Fujimoto",
+    coverGradient: "from-emerald-700 via-teal-600 to-blue-700",
+    genres: ["Dystopian", "Mystery", "Psychological"],
+    status: "completed",
+    demographic: "Seinen",
+    language: "English",
+    releaseYear: 2019,
+    rating: { average: 8.9, count: 6540 },
+    views: 1120000,
+    totalBookmarks: 167000,
+    chapterCount: 52,
+    updatedAt: "2026-05-10T08:00:00.000Z",
+    isTrending: false,
+    isNew: false,
+    isFeatured: false,
+  },
+  {
+    id: "9",
+    slug: "void-walkers",
+    title: "Void Walkers",
+    description:
+      "Explorers traverse rifts between dimensions until one team finds a mirror Earth where they never came home.",
+    synopsis:
+      "The Void Walkers are an elite exploration unit tasked with mapping unstable rifts that connect parallel Earths. Team leader Noah Kira has led dozens of successful transits until Mission Seventeen strands them in a mirror world where their counterparts died on the very first expedition. Evidence suggests someone on the home team deliberately sabotaged the rift coordinates. With each jump between dimensions, the boundaries of identity blur — and something on the other side is learning to follow them back.",
+    alternativeTitles: ["ヴォイド・ウォーカーズ", "Void Walkers: Mirror Earth"],
+    author: "Noah Kira",
+    artist: "Leo Yamamoto",
+    coverGradient: "from-indigo-900 via-violet-700 to-fuchsia-600",
+    genres: ["Sci-Fi", "Horror", "Adventure"],
+    status: "ongoing",
+    demographic: "Seinen",
+    language: "English",
+    releaseYear: 2020,
+    rating: { average: 9.2, count: 10450 },
+    views: 2180000,
+    totalBookmarks: 301000,
+    chapterCount: 87,
+    updatedAt: "2026-06-11T22:00:00.000Z",
+    isTrending: true,
+    isNew: false,
+    isFeatured: false,
+  },
+  {
+    id: "10",
+    slug: "silver-thread",
+    title: "Silver Thread",
+    description:
+      "A tailor weaves enchanted garments that grant temporary powers. One royal commission turns her into the kingdom's most wanted fugitive.",
+    synopsis:
+      "Master tailor Yuki Mori stitches enchanted garments from silver thread that grant wearers temporary supernatural abilities — flight, invisibility, or the strength of ten soldiers. When the royal court commissions a cloak for the prince's coronation, Yuki discovers the pattern woven into the lining is a binding spell that would make the entire kingdom slaves to the regent. Framed for treason, she flees with her bolt of living thread, pursued by the very powers she once clothed. Every stitch she makes now shapes the rebellion.",
+    alternativeTitles: ["シルバー・スレッド", "Silver Thread: Woven Rebellion"],
+    author: "Yuki Mori",
+    artist: "Nana Kobayashi",
+    coverGradient: "from-zinc-400 via-slate-500 to-indigo-600",
+    genres: ["Fantasy", "Adventure", "Comedy"],
+    status: "ongoing",
+    demographic: "Shōjo",
+    language: "English",
+    releaseYear: 2022,
+    rating: { average: 8.5, count: 2940 },
+    views: 610000,
+    totalBookmarks: 87000,
+    chapterCount: 29,
+    updatedAt: "2026-06-14T11:00:00.000Z",
+    isTrending: false,
+    isNew: true,
+    isFeatured: false,
+  },
+  {
+    id: "11",
+    slug: "azure-tide",
+    title: "Azure Tide",
+    description:
+      "Deep-sea divers map a sunken civilization that still pulses with bioluminescent life — and something watching back.",
+    synopsis:
+      "Marine cartographer Renji Okada leads a deep-sea expedition to map the sunken city of Thalassa, a pre-cataclysm civilization that still pulses with bioluminescent life. As the crew documents impossible architecture, their sonar begins registering movement in patterns that resemble written language. Each dive reveals more of the city's history — and something in the abyss registers their presence in return. The tide is rising, and the city may not be as abandoned as the surface world believes.",
+    alternativeTitles: ["アズール・タイド", "Azure Tide: Depths of Thalassa"],
+    author: "Renji Okada",
+    artist: "Hiro Amano",
+    coverGradient: "from-sky-600 via-teal-500 to-emerald-600",
+    genres: ["Adventure", "Mystery", "Sci-Fi"],
+    status: "ongoing",
+    demographic: "Seinen",
+    language: "English",
+    releaseYear: 2023,
+    rating: { average: 8.3, count: 2180 },
+    views: 540000,
+    totalBookmarks: 74000,
+    chapterCount: 24,
+    updatedAt: "2026-06-10T17:00:00.000Z",
+    isTrending: false,
+    isNew: true,
+    isFeatured: false,
+  },
+  {
+    id: "12",
+    slug: "paper-kingdom",
+    title: "Paper Kingdom",
+    description:
+      "An origami artisan discovers folded creatures come alive at midnight, guarding a kingdom hidden inside every sheet of paper.",
+    synopsis:
+      "Origami artisan Mei Lin inherits her grandmother's workshop and discovers that every fold she makes after midnight breathes life into paper creatures — cranes that scout, wolves that guard, and dragons that carry messages between worlds. A kingdom hidden inside the fibers of each sheet reveals itself to her, ruled by a paper emperor who claims Mei is the prophesied Folder Queen. When industrial paper mills threaten to pulp the last ancient scrolls, Mei must rally her creations to defend a realm most humans will never see.",
+    alternativeTitles: ["ペーパー・キングダム", "Paper Kingdom: Folded Realm"],
+    author: "Mei Lin",
+    artist: "Chen Wei",
+    coverGradient: "from-rose-400 via-orange-400 to-amber-500",
+    genres: ["Fantasy", "Slice of Life", "Adventure"],
+    status: "ongoing",
+    demographic: "Kodomo",
+    language: "English",
+    releaseYear: 2021,
+    rating: { average: 8.9, count: 4760 },
+    views: 1030000,
+    totalBookmarks: 143000,
+    chapterCount: 47,
+    updatedAt: "2026-06-09T19:00:00.000Z",
+    isTrending: true,
+    isNew: false,
+    isFeatured: false,
+  },
+];
+
+export const featuredManga = mockMangas.find((m) => m.isFeatured)!;
+
+export function getMangaBySlug(slug: string): Manga | undefined {
+  return mockMangas.find((m) => m.slug === slug);
+}
+
+export function getMangaById(id: string): Manga | undefined {
+  return mockMangas.find((m) => m.id === id);
+}
+
+export function getRelatedMangas(slug: string, limit = 4): Manga[] {
+  const manga = getMangaBySlug(slug);
+  if (!manga) return [];
+
+  return mockMangas
+    .filter((entry) => entry.slug !== slug)
+    .map((entry) => ({
+      entry,
+      score: entry.genres.filter((genre) => manga.genres.includes(genre))
+        .length,
+    }))
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        b.entry.views - a.entry.views ||
+        b.entry.rating.average - a.entry.rating.average,
+    )
+    .slice(0, limit)
+    .map(({ entry }) => entry);
+}
