@@ -26,6 +26,12 @@ export interface AdminUser {
   status: "active" | "suspended" | "pending";
   joinedAt: string;
   lastActive: string;
+  savedMangaCount: number;
+  chaptersRead: number;
+  completedManga: number;
+  readingStreak: number;
+  avatarGradient: string;
+  recentActivity: { id: string; message: string; timestamp: string }[];
 }
 
 export interface ContentHealth {
@@ -97,6 +103,15 @@ export const adminUsers: AdminUser[] = [
     status: "active",
     joinedAt: "2024-01-01T00:00:00.000Z",
     lastActive: new Date().toISOString(),
+    savedMangaCount: 124,
+    chaptersRead: 982,
+    completedManga: 28,
+    readingStreak: 18,
+    avatarGradient: "from-violet-600 via-fuchsia-500 to-rose-500",
+    recentActivity: [
+      { id: "a1", message: "Updated site configuration.", timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString() },
+      { id: "a2", message: "Approved new moderator account.", timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString() },
+    ],
   },
   {
     id: "2",
@@ -106,6 +121,15 @@ export const adminUsers: AdminUser[] = [
     status: "active",
     joinedAt: "2024-02-15T00:00:00.000Z",
     lastActive: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+    savedMangaCount: 96,
+    chaptersRead: 742,
+    completedManga: 15,
+    readingStreak: 12,
+    avatarGradient: "from-blue-500 via-cyan-500 to-sky-500",
+    recentActivity: [
+      { id: "a3", message: "Reviewed reported content.", timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString() },
+      { id: "a4", message: "Updated user permissions.", timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString() },
+    ],
   },
   {
     id: "3",
@@ -115,6 +139,15 @@ export const adminUsers: AdminUser[] = [
     status: "active",
     joinedAt: "2024-03-20T00:00:00.000Z",
     lastActive: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+    savedMangaCount: 34,
+    chaptersRead: 512,
+    completedManga: 8,
+    readingStreak: 9,
+    avatarGradient: "from-fuchsia-600 via-pink-500 to-rose-500",
+    recentActivity: [
+      { id: "a5", message: "Saved Neon Eclipse to library.", timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString() },
+      { id: "a6", message: "Finished chapter 142 of Neon Eclipse.", timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString() },
+    ],
   },
   {
     id: "4",
@@ -124,6 +157,15 @@ export const adminUsers: AdminUser[] = [
     status: "active",
     joinedAt: "2024-04-10T00:00:00.000Z",
     lastActive: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+    savedMangaCount: 21,
+    chaptersRead: 388,
+    completedManga: 5,
+    readingStreak: 6,
+    avatarGradient: "from-cyan-500 via-blue-500 to-indigo-500",
+    recentActivity: [
+      { id: "a7", message: "Commented on Crimson Horizon.", timestamp: new Date(Date.now() - 1000 * 60 * 80).toISOString() },
+      { id: "a8", message: "Started Starfall Academy.", timestamp: new Date(Date.now() - 1000 * 60 * 160).toISOString() },
+    ],
   },
   {
     id: "5",
@@ -133,6 +175,14 @@ export const adminUsers: AdminUser[] = [
     status: "suspended",
     joinedAt: "2024-05-01T00:00:00.000Z",
     lastActive: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString(),
+    savedMangaCount: 8,
+    chaptersRead: 62,
+    completedManga: 1,
+    readingStreak: 0,
+    avatarGradient: "from-rose-700 via-red-600 to-orange-500",
+    recentActivity: [
+      { id: "a9", message: "Account suspended for suspicious activity.", timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString() },
+    ],
   },
 ];
 
