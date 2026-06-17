@@ -15,7 +15,7 @@ export function AdminShell({ title, description, children }: AdminShellProps) {
       <AdminSidebar />
 
       {/* Main content area */}
-      <div className="flex flex-1 flex-col lg:ml-64">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Top bar */}
         <AdminTopbar title={title} description={description} />
 
