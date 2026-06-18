@@ -1,5 +1,6 @@
-import type { MangaDocument } from "./mangas";
+import type { MangaDocument, ChapterDocument } from "./mangas";
 import type { Manga } from "@/types/manga";
+import type { Chapter } from "@/types/chapter";
 
 export function mapMangaDocumentToManga(doc: MangaDocument): Manga {
   return {
@@ -30,4 +31,20 @@ export function mapMangaDocumentToManga(doc: MangaDocument): Manga {
 
 export function mapMangaDocumentsToMangas(docs: MangaDocument[]): Manga[] {
   return docs.map(mapMangaDocumentToManga);
+}
+
+export function mapChapterDocumentToChapter(doc: ChapterDocument): Chapter {
+  return {
+    id: doc.$id,
+    mangaId: doc.mangaId,
+    slug: doc.slug,
+    number: doc.number,
+    title: doc.title,
+    publishedAt: doc.publishedAt,
+    pageCount: doc.pageCount,
+  };
+}
+
+export function mapChapterDocumentsToChapters(docs: ChapterDocument[]): Chapter[] {
+  return docs.map(mapChapterDocumentToChapter);
 }

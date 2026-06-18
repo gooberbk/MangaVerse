@@ -6,10 +6,12 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import {
   getChaptersByMangaSlug,
-  getMangaBySlug,
+  getMangaBySlug as getMockMangaBySlug,
   getRelatedMangas,
   mockMangas,
 } from "@/lib/mock";
+import { getMangaBySlug as getAppwriteMangaBySlug, listChaptersByMangaId } from "@/lib/appwrite/mangas";
+import { mapMangaDocumentToManga, mapChapterDocumentsToChapters } from "@/lib/appwrite/mapping";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -18,6 +20,8 @@ type MangaDetailPageProps = {
 };
 
 export async function generateStaticParams() {
+  // Use mock slugs for static generation to ensure build stability
+  // Appwrite mangas will be handled at runtime
   return mockMangas.map((manga) => ({ slug: manga.slug }));
 }
 
@@ -25,7 +29,21 @@ export async function generateMetadata({
   params,
 }: MangaDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const manga = getMangaBySlug(slug);
+
+  // Try Appwrite first, then fallback to mock
+  let manga = null;
+  try {
+    const appwriteMangaDoc = await getAppwriteMangaBySlug(slug);
+    if (appwriteMangaDoc) {
+      manga = mapMangaDocumentToManga(appwriteMangaDoc);
+    }
+  } catch (error) {
+    console.error(`Failed to get manga from Appwrite for slug "${slug}":`, error);
+  }
+
+  if (!manga) {
+    manga = getMockMangaBySlug(slug);
+  }
 
   if (!manga) {
     return { title: "Manga Not Found" };
@@ -39,13 +57,48 @@ export async function generateMetadata({
 
 export default async function MangaDetailPage({ params }: MangaDetailPageProps) {
   const { slug } = await params;
-  const manga = getMangaBySlug(slug);
+
+  // Try Appwrite first, then fallback to mock
+  let manga = null;
+  let fromAppwrite = false;
+  try {
+    const appwriteMangaDoc = await getAppwriteMangaBySlug(slug);
+    if (appwriteMangaDoc) {
+      manga = mapMangaDocumentToManga(appwriteMangaDoc);
+      fromAppwrite = true;
+    }
+  } catch (error) {
+    console.error(`Failed to get manga from Appwrite for slug "${slug}":`, error);
+  }
+
+  if (!manga) {
+    manga = getMockMangaBySlug(slug);
+  }
 
   if (!manga) {
     notFound();
   }
 
-  const chapters = getChaptersByMangaSlug(slug);
+  // Get chapters - use Appwrite if manga is from Appwrite, otherwise use mock
+  let chapters = [];
+  if (fromAppwrite) {
+    try {
+      const appwriteChapters = await listChaptersByMangaId(manga.id);
+      if (appwriteChapters.length > 0) {
+        chapters = mapChapterDocumentsToChapters(appwriteChapters);
+      } else {
+        // Fallback to mock chapters if Appwrite has no chapters
+        chapters = getChaptersByMangaSlug(slug);
+      }
+    } catch (error) {
+      console.error(`Failed to get chapters from Appwrite for manga "${manga.id}":`, error);
+      // Fallback to mock chapters on error
+      chapters = getChaptersByMangaSlug(slug);
+    }
+  } else {
+    chapters = getChaptersByMangaSlug(slug);
+  }
+
   const related = getRelatedMangas(slug);
   const latestChapterNumber =
     chapters[0]?.number ?? manga.chapterCount;
