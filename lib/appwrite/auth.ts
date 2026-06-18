@@ -60,7 +60,7 @@ export async function sendPasswordRecovery(
   redirectUrl =
     typeof window === "undefined"
       ? ""
-      : `${window.location.origin}/forgot-password`,
+      : `${window.location.origin}/reset-password`,
 ) {
   assertAppwriteAuthConfigured();
 
