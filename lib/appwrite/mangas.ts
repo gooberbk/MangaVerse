@@ -119,7 +119,7 @@ export async function getLatestMangas(): Promise<MangaDocument[]> {
       APPWRITE_DATABASE_ID,
       APPWRITE_COLLECTIONS.mangas,
       [
-        Query.orderDesc("updatedAt"),
+        Query.orderDesc("$updatedAt"),
       ],
     );
     return result.documents;

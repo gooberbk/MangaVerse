@@ -1,4 +1,4 @@
-import { getAllGenres, mockMangas } from "@/lib/mock";
+import { mockMangas } from "@/lib/mock";
 import type {
   Manga,
   MangaDemographic,
@@ -58,26 +58,32 @@ export const RATING_FILTER_OPTIONS = [
   { value: 7, label: "7.0+" },
 ] as const;
 
-export function getCatalogStats(): CatalogStats {
+export function getCatalogStats(mangas: Manga[] = mockMangas): CatalogStats {
+  const genres = new Set<MangaGenre>();
+  for (const manga of mangas) {
+    for (const genre of manga.genres) {
+      genres.add(genre);
+    }
+  }
   return {
-    totalTitles: mockMangas.length,
-    genreCount: getAllGenres().length,
-    ongoingCount: mockMangas.filter((m) => m.status === "ongoing").length,
-    completedCount: mockMangas.filter((m) => m.status === "completed").length,
+    totalTitles: mangas.length,
+    genreCount: genres.size,
+    ongoingCount: mangas.filter((m) => m.status === "ongoing").length,
+    completedCount: mangas.filter((m) => m.status === "completed").length,
   };
 }
 
-export function getAllDemographics(): MangaDemographic[] {
+export function getAllDemographics(mangas: Manga[] = mockMangas): MangaDemographic[] {
   const demographics = new Set<MangaDemographic>();
-  for (const manga of mockMangas) {
+  for (const manga of mangas) {
     demographics.add(manga.demographic);
   }
   return [...demographics].sort();
 }
 
-export function getAllReleaseYears(): number[] {
+export function getAllReleaseYears(mangas: Manga[] = mockMangas): number[] {
   const years = new Set<number>();
-  for (const manga of mockMangas) {
+  for (const manga of mangas) {
     years.add(manga.releaseYear);
   }
   return [...years].sort((a, b) => b - a);
