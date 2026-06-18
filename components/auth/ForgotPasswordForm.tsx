@@ -1,106 +1,92 @@
 "use client";
 
-import { AuthCard } from "@/components/auth/AuthCard";
-import { AuthInput } from "@/components/auth/AuthInput";
-import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useState } from "react";
-
-type FormStatus = "idle" | "loading" | "success";
+import { type FormEvent, useState } from "react";
+import { sendPasswordRecovery } from "@/lib/appwrite/auth";
 
 export function ForgotPasswordForm() {
-  const [status, setStatus] = useState<FormStatus>("idle");
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    setEmail(String(formData.get("email") ?? ""));
-    setStatus("loading");
-    // Demo only — no reset email is sent.
-    await new Promise((resolve) => setTimeout(resolve, 1100));
-    setStatus("success");
+    setError("");
+    setSuccessMessage("");
+    setIsSubmitting(true);
+
+    try {
+      // Appwrite must allow this URL in the project Web platform settings.
+      await sendPasswordRecovery(email);
+      setSuccessMessage("Password recovery email sent. Check your inbox.");
+    } catch (submitError) {
+      setError(getAuthErrorMessage(submitError));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form className="space-y-5" onSubmit={handleSubmit}>
+      <div className="space-y-2">
+        <label
+          htmlFor="forgot-password-email"
+          className="text-sm font-medium text-white"
+        >
+          Email
+        </label>
+        <input
+          id="forgot-password-email"
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          className="h-12 w-full rounded-xl border border-white/10 bg-white/5 px-4 text-sm text-white outline-none transition-colors placeholder:text-muted/60 focus:border-accent-purple"
+          placeholder="you@example.com"
+        />
+      </div>
+
+      {error && (
+        <p className="text-sm font-medium text-rose-400" role="alert">
+          {error}
+        </p>
+      )}
+
+      {successMessage && (
+        <p className="text-sm font-medium text-emerald-400" role="status">
+          {successMessage}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink px-5 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-all duration-200 hover:brightness-110 disabled:pointer-events-none disabled:opacity-60"
+      >
+        {isSubmitting ? "Sending..." : "Send recovery email"}
+      </button>
+
+      <p className="text-center text-sm text-muted">
+        Remembered your password?{" "}
+        <Link
+          href="/login"
+          className="font-medium text-accent-purple transition-colors hover:text-accent-pink"
+        >
+          Sign in
+        </Link>
+      </p>
+    </form>
+  );
+}
+
+function getAuthErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    return error.message;
   }
 
-  return (
-    <AuthCard
-      title="Reset password"
-      subtitle="Enter your email and we'll send you a link to reset your password."
-    >
-      {status === "success" ? (
-        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-6">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20">
-            <MailIcon />
-          </div>
-          <h2 className="mt-4 text-lg font-bold text-white">Check your inbox</h2>
-          <p className="mt-2 text-sm leading-relaxed text-muted">
-            If an account exists for{" "}
-            <span className="font-medium text-white">{email || "your email"}</span>
-            , a reset link would be sent. This is a demo — no email was sent.
-          </p>
-          <Link
-            href="/login"
-            className={cn(
-              "mt-6 inline-flex h-11 items-center rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink",
-              "px-6 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:brightness-110",
-            )}
-          >
-            Back to sign in
-          </Link>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <AuthInput
-            label="Email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="you@example.com"
-            required
-            disabled={status === "loading"}
-          />
-
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full"
-            disabled={status === "loading"}
-          >
-            {status === "loading" ? "Sending link..." : "Send reset link"}
-          </Button>
-
-          <p className="text-center text-sm text-muted">
-            Remember your password?{" "}
-            <Link
-              href="/login"
-              className="font-medium text-accent-purple transition-colors hover:text-accent-pink"
-            >
-              Back to sign in
-            </Link>
-          </p>
-        </form>
-      )}
-    </AuthCard>
-  );
+  return "Unable to send password recovery email. Please try again.";
 }
 
-function MailIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="text-emerald-400"
-    >
-      <rect width="20" height="16" x="2" y="4" rx="2" />
-      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-    </svg>
-  );
-}
+export default ForgotPasswordForm;
