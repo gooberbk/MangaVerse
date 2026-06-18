@@ -4,6 +4,7 @@ import {
   NEXT_PUBLIC_APPWRITE_ENDPOINT,
   NEXT_PUBLIC_APPWRITE_PROJECT_ID,
 } from "./config";
+import { createUserProfile } from "./profiles";
 
 export type AppwriteUser = Models.User<Models.Preferences>;
 
@@ -27,6 +28,7 @@ export async function registerWithEmail(
 
   const user = await account.create(ID.unique(), email, password, name);
   await loginWithEmail(email, password);
+  await createUserProfile(user, name);
 
   return user;
 }

@@ -7,6 +7,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -16,9 +17,14 @@ import {
   registerWithEmail,
   type AppwriteUser,
 } from "@/lib/appwrite/auth";
+import {
+  getUserProfile,
+  type UserProfile,
+} from "@/lib/appwrite/profiles";
 
 type AuthContextValue = {
   user: AppwriteUser | null;
+  profile: UserProfile | null;
   loading: boolean;
   refreshUser: () => Promise<AppwriteUser | null>;
   login: (email: string, password: string) => Promise<AppwriteUser | null>;
@@ -38,7 +44,9 @@ type AuthProviderProps = {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<AppwriteUser | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const authMutationCountRef = useRef(0);
 
   const refreshUser = useCallback(async () => {
     setLoading(true);
@@ -46,6 +54,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const currentUser = await getCurrentUser();
       setUser(currentUser);
+
+      if (!currentUser) {
+        setProfile(null);
+        return null;
+      }
+
+      if (authMutationCountRef.current > 0) {
+        setProfile(null);
+        return currentUser;
+      }
+
+      try {
+        setProfile(await getUserProfile(currentUser.$id));
+      } catch (profileError) {
+        console.warn(
+          "Unable to load Appwrite profile for the current user.",
+          getProfileErrorSummary(profileError),
+        );
+        setProfile(null);
+      }
+
       return currentUser;
     } finally {
       setLoading(false);
@@ -57,7 +86,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setLoading(true);
 
       try {
-        await loginWithEmail(email, password);
+        try {
+          authMutationCountRef.current += 1;
+          await loginWithEmail(email, password);
+        } finally {
+          authMutationCountRef.current -= 1;
+        }
+
         return await refreshUser();
       } finally {
         setLoading(false);
@@ -71,7 +106,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setLoading(true);
 
       try {
-        await registerWithEmail(email, password, name);
+        try {
+          authMutationCountRef.current += 1;
+          await registerWithEmail(email, password, name);
+        } finally {
+          authMutationCountRef.current -= 1;
+        }
+
         return await refreshUser();
       } finally {
         setLoading(false);
@@ -86,6 +127,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       await logoutCurrentUser();
       setUser(null);
+      setProfile(null);
     } finally {
       setLoading(false);
     }
@@ -95,45 +137,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     void refreshUser();
   }, [refreshUser]);
 
-  useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
-      if (window.location.pathname !== "/account") {
-        return;
-      }
-
-      const target = event.target;
-      const trigger =
-        target instanceof Element
-          ? target.closest<HTMLButtonElement | HTMLAnchorElement>("button, a")
-          : null;
-
-      if (!trigger || !/log\s*out|logout|sign\s*out/i.test(trigger.textContent ?? "")) {
-        return;
-      }
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      void handleAccountLogout(trigger, logout);
-    };
-
-    document.addEventListener("click", handleClick, true);
-
-    return () => {
-      document.removeEventListener("click", handleClick, true);
-    };
-  }, [logout]);
-
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
+      profile,
       loading,
       refreshUser,
       login,
       register,
       logout,
     }),
-    [loading, login, logout, refreshUser, register, user],
+    [loading, login, logout, profile, refreshUser, register, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -149,48 +163,15 @@ export function useAuth() {
   return value;
 }
 
-async function handleAccountLogout(
-  trigger: HTMLButtonElement | HTMLAnchorElement,
-  logout: AuthContextValue["logout"],
-) {
-  const previousLabel = trigger.textContent;
-  setElementDisabled(trigger, true);
-  trigger.textContent = "Logging out...";
-
-  try {
-    await logout();
-    window.location.assign("/login");
-  } catch (error) {
-    trigger.textContent = getErrorMessage(error);
-    setElementDisabled(trigger, false);
-
-    window.setTimeout(() => {
-      trigger.textContent = previousLabel;
-    }, 2500);
-  }
-}
-
-function setElementDisabled(
-  element: HTMLButtonElement | HTMLInputElement | HTMLAnchorElement,
-  disabled: boolean,
-) {
-  if (element instanceof HTMLAnchorElement) {
-    element.setAttribute("aria-disabled", String(disabled));
-    return;
+function getProfileErrorSummary(error: unknown) {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    typeof (error as { code: unknown }).code !== "undefined"
+  ) {
+    return { code: Number((error as { code: unknown }).code) };
   }
 
-  if (!element.dataset.label && element.textContent) {
-    element.dataset.label = element.textContent;
-  }
-
-  element.disabled = disabled;
-  element.setAttribute("aria-busy", String(disabled));
-}
-
-function getErrorMessage(error: unknown) {
-  if (error instanceof Error) {
-    return error.message;
-  }
-
-  return "Something went wrong. Please try again.";
+  return { code: "unknown" };
 }

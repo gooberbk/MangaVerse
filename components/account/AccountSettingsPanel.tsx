@@ -2,16 +2,27 @@
 
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type AccountSettingsPanelProps = {
+  displayName?: string;
+  email?: string;
   className?: string;
 };
 
-export function AccountSettingsPanel({ className }: AccountSettingsPanelProps) {
-  const [displayName, setDisplayName] = useState("MangaFan");
-  const [email, setEmail] = useState("mangafan@example.com");
+export function AccountSettingsPanel({
+  displayName: initialDisplayName = "MangaFan",
+  email: initialEmail = "mangafan@example.com",
+  className,
+}: AccountSettingsPanelProps) {
+  const [displayName, setDisplayName] = useState(initialDisplayName);
+  const [email, setEmail] = useState(initialEmail);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    setDisplayName(initialDisplayName);
+    setEmail(initialEmail);
+  }, [initialDisplayName, initialEmail]);
 
   function handleSave() {
     setShowSuccess(true);

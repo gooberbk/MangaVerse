@@ -1,6 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -9,7 +11,21 @@ type DangerZonePanelProps = {
 };
 
 export function DangerZonePanel({ className }: DangerZonePanelProps) {
+  const router = useRouter();
+  const { logout } = useAuth();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setIsLoggingOut(true);
+
+    try {
+      await logout();
+      router.push("/login");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  }
 
   return (
     <div className={cn("glass rounded-2xl p-6 shadow-lg shadow-black/20 sm:p-8", className)}>
@@ -29,8 +45,13 @@ export function DangerZonePanel({ className }: DangerZonePanelProps) {
               Sign out of your account on this device
             </p>
           </div>
-          <Button variant="secondary" size="md">
-            Sign Out
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+          >
+            {isLoggingOut ? "Signing Out..." : "Sign Out"}
           </Button>
         </div>
 

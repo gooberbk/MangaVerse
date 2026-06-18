@@ -5,6 +5,7 @@ type AccountProfileHeaderProps = {
   username?: string;
   email?: string;
   joinDate?: string;
+  role?: string;
   className?: string;
 };
 
@@ -12,6 +13,7 @@ export function AccountProfileHeader({
   username = "MangaFan",
   email = "mangafan@example.com",
   joinDate = "January 2024",
+  role = "reader",
   className,
 }: AccountProfileHeaderProps) {
   const initials = username
@@ -54,7 +56,7 @@ export function AccountProfileHeader({
               <div className="inline-flex items-center rounded-full bg-white/5 px-3 py-1.5 border border-white/10">
                 <span className="h-2 w-2 rounded-full bg-accent-purple mr-2" />
                 <span className="text-xs font-medium text-white">
-                  Free Reader
+                  {formatRole(role)}
                 </span>
               </div>
             </div>
@@ -74,4 +76,10 @@ export function AccountProfileHeader({
       </div>
     </div>
   );
+}
+
+function formatRole(role: string) {
+  const normalizedRole = role.trim() || "reader";
+
+  return `${normalizedRole.charAt(0).toUpperCase()}${normalizedRole.slice(1)} Reader`;
 }
