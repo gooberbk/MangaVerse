@@ -1,0 +1,241 @@
+import { Query, type Models } from "appwrite";
+import { databases } from "./client";
+import {
+  APPWRITE_COLLECTIONS,
+  APPWRITE_DATABASE_ID,
+} from "./config";
+import type { MangaStatus, MangaDemographic, MangaGenre, MangaRating } from "@/types/manga";
+
+export type MangaDocument = Models.Document & {
+  slug: string;
+  title: string;
+  description: string;
+  synopsis: string;
+  alternativeTitles: string[];
+  author: string;
+  artist: string;
+  coverGradient: string;
+  genres: MangaGenre[];
+  status: MangaStatus;
+  demographic: MangaDemographic;
+  language: string;
+  releaseYear: number;
+  rating: MangaRating;
+  views: number;
+  totalBookmarks: number;
+  chapterCount: number;
+  isTrending: boolean;
+  isNew: boolean;
+  isFeatured: boolean;
+};
+
+export type ChapterDocument = Models.Document & {
+  mangaId: string;
+  slug: string;
+  number: number;
+  title: string;
+  publishedAt: string;
+  pageCount: number;
+};
+
+export type ChapterPageDocument = Models.Document & {
+  chapterId: string;
+  pageNumber: number;
+  imageUrl?: string;
+  alt?: string;
+};
+
+const assertMangasConfigured = () => {
+  if (!APPWRITE_DATABASE_ID || !APPWRITE_COLLECTIONS.mangas) {
+    throw new Error(
+      "Appwrite mangas are not configured. Add NEXT_PUBLIC_APPWRITE_DATABASE_ID and NEXT_PUBLIC_APPWRITE_MANGAS_COLLECTION_ID to .env.local.",
+    );
+  }
+};
+
+const assertChaptersConfigured = () => {
+  if (!APPWRITE_DATABASE_ID || !APPWRITE_COLLECTIONS.chapters) {
+    throw new Error(
+      "Appwrite chapters are not configured. Add NEXT_PUBLIC_APPWRITE_DATABASE_ID and NEXT_PUBLIC_APPWRITE_CHAPTERS_COLLECTION_ID to .env.local.",
+    );
+  }
+};
+
+const assertChapterPagesConfigured = () => {
+  if (!APPWRITE_DATABASE_ID || !APPWRITE_COLLECTIONS.chapterPages) {
+    throw new Error(
+      "Appwrite chapter pages are not configured. Add NEXT_PUBLIC_APPWRITE_DATABASE_ID and NEXT_PUBLIC_APPWRITE_CHAPTER_PAGES_COLLECTION_ID to .env.local.",
+    );
+  }
+};
+
+function isNotFoundError(error: unknown) {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    Number((error as { code: unknown }).code) === 404
+  );
+}
+
+export async function listMangas(): Promise<MangaDocument[]> {
+  assertMangasConfigured();
+
+  try {
+    const result = await databases.listDocuments<MangaDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.mangas,
+    );
+    return result.documents;
+  } catch (error) {
+    console.error("Failed to list mangas:", error);
+    return [];
+  }
+}
+
+export async function getFeaturedMangas(): Promise<MangaDocument[]> {
+  assertMangasConfigured();
+
+  try {
+    const result = await databases.listDocuments<MangaDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.mangas,
+      [
+        Query.equal("isFeatured", true),
+      ],
+    );
+    return result.documents;
+  } catch (error) {
+    console.error("Failed to get featured mangas:", error);
+    return [];
+  }
+}
+
+export async function getLatestMangas(): Promise<MangaDocument[]> {
+  assertMangasConfigured();
+
+  try {
+    const result = await databases.listDocuments<MangaDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.mangas,
+      [
+        Query.orderDesc("updatedAt"),
+      ],
+    );
+    return result.documents;
+  } catch (error) {
+    console.error("Failed to get latest mangas:", error);
+    return [];
+  }
+}
+
+export async function getPopularMangas(): Promise<MangaDocument[]> {
+  assertMangasConfigured();
+
+  try {
+    const result = await databases.listDocuments<MangaDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.mangas,
+      [
+        Query.orderDesc("views"),
+      ],
+    );
+    return result.documents;
+  } catch (error) {
+    console.error("Failed to get popular mangas:", error);
+    return [];
+  }
+}
+
+export async function getMangaBySlug(slug: string): Promise<MangaDocument | null> {
+  assertMangasConfigured();
+
+  try {
+    const result = await databases.listDocuments<MangaDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.mangas,
+      [
+        Query.equal("slug", slug),
+      ],
+    );
+    
+    const manga = result.documents[0] || null;
+    return manga;
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      return null;
+    }
+    console.error(`Failed to get manga by slug "${slug}":`, error);
+    return null;
+  }
+}
+
+export async function listChaptersByMangaId(mangaId: string): Promise<ChapterDocument[]> {
+  assertChaptersConfigured();
+
+  try {
+    const result = await databases.listDocuments<ChapterDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.chapters,
+      [
+        Query.equal("mangaId", mangaId),
+        Query.orderDesc("number"),
+      ],
+    );
+    
+    return result.documents;
+  } catch (error) {
+    console.error(`Failed to list chapters for manga "${mangaId}":`, error);
+    return [];
+  }
+}
+
+export async function getChapterBySlug(mangaSlug: string, chapterSlug: string): Promise<ChapterDocument | null> {
+  assertChaptersConfigured();
+
+  try {
+    // First get the manga by slug to get the mangaId
+    const manga = await getMangaBySlug(mangaSlug);
+    if (!manga) {
+      return null;
+    }
+
+    const result = await databases.listDocuments<ChapterDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.chapters,
+      [
+        Query.equal("slug", chapterSlug),
+        Query.equal("mangaId", manga.$id),
+      ],
+    );
+    
+    const chapter = result.documents[0] || null;
+    return chapter;
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      return null;
+    }
+    console.error(`Failed to get chapter by slug "${chapterSlug}":`, error);
+    return null;
+  }
+}
+
+export async function listChapterPages(chapterId: string): Promise<ChapterPageDocument[]> {
+  assertChapterPagesConfigured();
+
+  try {
+    const result = await databases.listDocuments<ChapterPageDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.chapterPages,
+      [
+        Query.equal("chapterId", chapterId),
+        Query.orderAsc("pageNumber"),
+      ],
+    );
+    
+    return result.documents;
+  } catch (error) {
+    console.error(`Failed to list pages for chapter "${chapterId}":`, error);
+    return [];
+  }
+}
