@@ -41,7 +41,9 @@ export async function createUserProfile(
       },
       [
         Permission.read(Role.user(user.$id)),
-        Permission.update(Role.user(user.$id)),
+        // Intentionally no user update permission. The profile.role field must not be used
+        // for authorization. Admin authorization currently uses a temporary email allowlist.
+        // Future production admin roles must be server-controlled to prevent privilege escalation.
       ],
     );
   } catch (error) {
