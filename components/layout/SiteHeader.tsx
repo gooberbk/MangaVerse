@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/components/auth/AuthProvider";
 import { HeaderSearch } from "@/components/layout/HeaderSearch";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -22,6 +23,10 @@ function isNavLinkActive(href: string, pathname: string): boolean {
 export function SiteHeader() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, profile, loading } = useAuth();
+  const isAuthenticated = Boolean(user);
+  const accountName = profile?.name ?? user?.name ?? "";
+  const userInitials = getInitials(accountName);
 
   function closeMobileMenu() {
     setMobileOpen(false);
@@ -65,24 +70,43 @@ export function SiteHeader() {
         </div>
 
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
-          <Link
-            href="/library"
-            className="hidden rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-white/5 hover:text-white sm:block"
-          >
-            Library
-          </Link>
-          <Link
-            href="/account"
-            className="hidden rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-white/5 hover:text-white sm:block"
-          >
-            Account
-          </Link>
-          <Link
-            href="/browse"
-            className="rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:shadow-purple-500/40 hover:brightness-110 sm:px-4"
-          >
-            Start Reading
-          </Link>
+          {!loading && isAuthenticated && (
+            <>
+              <Link
+                href="/library"
+                className="hidden rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-white/5 hover:text-white sm:block"
+              >
+                Library
+              </Link>
+              <Link
+                href="/account"
+                className="hidden rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-white/5 hover:text-white sm:block"
+              >
+                Account
+              </Link>
+              {userInitials && (
+                <span className="hidden h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-xs font-bold text-white ring-1 ring-white/10 sm:flex">
+                  {userInitials}
+                </span>
+              )}
+            </>
+          )}
+          {!loading && !isAuthenticated && (
+            <>
+              <Link
+                href="/login"
+                className="hidden rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-white/5 hover:text-white sm:block"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:shadow-purple-500/40 hover:brightness-110 sm:px-4"
+              >
+                Create Account
+              </Link>
+            </>
+          )}
           <button
             type="button"
             aria-label="Toggle menu"
@@ -126,24 +150,54 @@ export function SiteHeader() {
             })}
 
             <Link
-              href="/library"
+              href={isAuthenticated ? "/library" : "/login"}
               onClick={closeMobileMenu}
               className="mt-2 rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-white/5 hover:text-white"
             >
-              Library
+              {isAuthenticated ? "Library" : "Library requires sign in"}
             </Link>
-            <Link
-              href="/account"
-              onClick={closeMobileMenu}
-              className="rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-white/5 hover:text-white"
-            >
-              Account
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                href="/account"
+                onClick={closeMobileMenu}
+                className="rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-white/5 hover:text-white"
+              >
+                Account
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={closeMobileMenu}
+                  className="rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-white/5 hover:text-white"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={closeMobileMenu}
+                  className="mt-1 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink px-3 py-2.5 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:brightness-110"
+                >
+                  Create Account
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       )}
     </header>
   );
+}
+
+function getInitials(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 }
 
 function MenuIcon() {

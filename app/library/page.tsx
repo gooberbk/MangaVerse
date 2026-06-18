@@ -1,8 +1,6 @@
-import { LibraryPageClient } from "@/components/library/LibraryPageClient";
+import { ProtectedLibraryPageClient } from "@/components/library/ProtectedLibraryPageClient";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import { DestinationHero } from "@/components/ui/DestinationHero";
-import { StatBadge } from "@/components/ui/StatBadge";
 import {
   getCompletedMangas,
   getContinueReadingEntries,
@@ -30,27 +28,8 @@ export default function LibraryPage() {
       <SiteHeader />
 
       <main>
-        <DestinationHero
-          eyebrow="Your Collection"
-          title="My Library"
-          subtitle="Saved manga, reading progress, and recent activity — your personal hub for everything you're reading on MangaVerse."
-          glow="purple"
-        >
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-            <StatBadge label="Saved Titles" value={stats.savedTitles} />
-            <StatBadge
-              label="Continue Reading"
-              value={stats.continueReadingCount}
-            />
-            <StatBadge label="Completed" value={stats.completedCount} />
-            <StatBadge
-              label="Reading Streak"
-              value={`${stats.readingStreakDays} days`}
-            />
-          </div>
-        </DestinationHero>
-
-        <LibraryPageClient
+        <ProtectedLibraryPageClient
+          stats={stats}
           continueReading={continueReading}
           favorites={favorites}
           history={history}
