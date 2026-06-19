@@ -220,6 +220,30 @@ export async function getChapterBySlug(mangaSlug: string, chapterSlug: string): 
   }
 }
 
+export async function getChapterByNumber(mangaId: string, chapterNumber: number): Promise<ChapterDocument | null> {
+  assertChaptersConfigured();
+
+  try {
+    const result = await databases.listDocuments<ChapterDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.chapters,
+      [
+        Query.equal("mangaId", mangaId),
+        Query.equal("number", chapterNumber),
+      ],
+    );
+    
+    const chapter = result.documents[0] || null;
+    return chapter;
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      return null;
+    }
+    console.error(`Failed to get chapter by number "${chapterNumber}":`, error);
+    return null;
+  }
+}
+
 export async function listChapterPages(chapterId: string): Promise<ChapterPageDocument[]> {
   assertChapterPagesConfigured();
 

@@ -1,6 +1,6 @@
-import type { MangaDocument, ChapterDocument } from "./mangas";
+import type { MangaDocument, ChapterDocument, ChapterPageDocument } from "./mangas";
 import type { Manga } from "@/types/manga";
-import type { Chapter } from "@/types/chapter";
+import type { Chapter, ChapterPage } from "@/types/chapter";
 
 export function mapMangaDocumentToManga(doc: MangaDocument): Manga {
   return {
@@ -47,4 +47,17 @@ export function mapChapterDocumentToChapter(doc: ChapterDocument): Chapter {
 
 export function mapChapterDocumentsToChapters(docs: ChapterDocument[]): Chapter[] {
   return docs.map(mapChapterDocumentToChapter);
+}
+
+export function mapChapterPageDocumentToChapterPage(doc: ChapterPageDocument): ChapterPage {
+  return {
+    index: doc.pageNumber,
+    gradient: "from-slate-800 via-zinc-700 to-stone-800", // Fallback gradient when imageUrl is not available
+    alt: doc.alt ?? `Page ${doc.pageNumber}`,
+    imageUrl: doc.imageUrl, // Use Appwrite imageUrl when present
+  };
+}
+
+export function mapChapterPageDocumentsToChapterPages(docs: ChapterPageDocument[]): ChapterPage[] {
+  return docs.map(mapChapterPageDocumentToChapterPage);
 }

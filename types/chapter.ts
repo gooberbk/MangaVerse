@@ -8,9 +8,10 @@ export type Chapter = {
   pageCount: number;
 };
 
-/** Placeholder page for the reader — gradient stand-ins until real assets are wired */
+/** Page for the reader — can be gradient placeholder or actual image URL */
 export type ChapterPage = {
   index: number;
   gradient: string;
   alt: string;
+  imageUrl?: string;
 };

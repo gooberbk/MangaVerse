@@ -5,10 +5,21 @@ import {
   getChapterByMangaSlugAndNumber,
   getChapterPagesForMangaChapter,
   getChaptersByMangaSlug,
-  getMangaBySlug,
+  getMangaBySlug as getMockMangaBySlug,
   getRelatedMangas,
   mockMangas,
 } from "@/lib/mock";
+import {
+  getChapterByNumber,
+  getMangaBySlug,
+  listChapterPages,
+} from "@/lib/appwrite/mangas";
+import {
+  mapChapterPageDocumentsToChapterPages,
+  mapChapterDocumentsToChapters,
+  mapMangaDocumentToManga,
+} from "@/lib/appwrite/mapping";
+import type { ChapterPage } from "@/types/chapter";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -41,11 +52,34 @@ export async function generateMetadata({
 }: ChapterReaderPageProps): Promise<Metadata> {
   const { slug, chapterNumber: chapterNumberParam } = await params;
   const chapterNumber = parseChapterNumber(chapterNumberParam);
-  const manga = getMangaBySlug(slug);
-  const chapter =
-    chapterNumber !== null
-      ? getChapterByMangaSlugAndNumber(slug, chapterNumber)
-      : undefined;
+
+  if (chapterNumber === null) {
+    return { title: "Chapter Not Found" };
+  }
+
+  // Try Appwrite first
+  let manga = null;
+  let chapter = null;
+
+  try {
+    const appwriteManga = await getMangaBySlug(slug);
+    if (appwriteManga) {
+      manga = mapMangaDocumentToManga(appwriteManga);
+      const appwriteChapter = await getChapterByNumber(manga.id, chapterNumber);
+      if (appwriteChapter) {
+        const [mappedChapter] = mapChapterDocumentsToChapters([appwriteChapter]);
+        chapter = mappedChapter;
+      }
+    }
+  } catch (error) {
+    console.error("Failed to load from Appwrite, falling back to mock:", error);
+  }
+
+  // Fallback to mock
+  if (!manga || !chapter) {
+    manga = getMockMangaBySlug(slug);
+    chapter = getChapterByMangaSlugAndNumber(slug, chapterNumber);
+  }
 
   if (!manga || !chapter) {
     return { title: "Chapter Not Found" };
@@ -67,14 +101,41 @@ export default async function ChapterReaderPage({
     notFound();
   }
 
-  const manga = getMangaBySlug(slug);
-  const chapter = getChapterByMangaSlugAndNumber(slug, chapterNumber);
+  let manga = null;
+  let chapter = null;
+  let pages: ChapterPage[] = [];
+
+  // Try Appwrite first
+  try {
+    const appwriteManga = await getMangaBySlug(slug);
+    if (appwriteManga) {
+      manga = mapMangaDocumentToManga(appwriteManga);
+      const appwriteChapter = await getChapterByNumber(manga.id, chapterNumber);
+      if (appwriteChapter) {
+        const [mappedChapter] = mapChapterDocumentsToChapters([appwriteChapter]);
+        chapter = mappedChapter;
+        const appwritePages = await listChapterPages(chapter.id);
+        if (appwritePages.length > 0) {
+          pages = mapChapterPageDocumentsToChapterPages(appwritePages);
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Failed to load from Appwrite, falling back to mock:", error);
+  }
+
+  // Fallback to mock if Appwrite failed or returned no data
+  if (!manga || !chapter || pages.length === 0) {
+    manga = getMockMangaBySlug(slug);
+    chapter = getChapterByMangaSlugAndNumber(slug, chapterNumber);
+    pages = getChapterPagesForMangaChapter(slug, chapterNumber);
+  }
 
   if (!manga || !chapter) {
     notFound();
   }
 
-  const pages = getChapterPagesForMangaChapter(slug, chapterNumber);
+  // Use mock-based navigation for consistency
   const { prev, next } = getAdjacentChapterNumbers(slug, chapterNumber);
   const chapterNumbers = getAllChapterNumbers(slug);
   const relatedMangas = getRelatedMangas(slug, 4);
