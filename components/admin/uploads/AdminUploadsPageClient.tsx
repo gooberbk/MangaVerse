@@ -26,7 +26,7 @@ export function AdminUploadsPageClient() {
   const [convertWebP, setConvertWebP] = useState(true);
   const [generateThumbnails, setGenerateThumbnails] = useState(true);
   const [visibility, setVisibility] = useState<"public" | "private">("public");
-  const [uploads, setUploads] = useState<UploadAsset[]>(mockUploads);
+  const [uploads] = useState<UploadAsset[]>(mockUploads);
   const [deleteTarget, setDeleteTarget] = useState<UploadAsset | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -63,25 +63,9 @@ export function AdminUploadsPageClient() {
   }, []);
 
   const handleSaveUpload = useCallback(() => {
-    const nextId = `u-${Date.now()}`;
-    const newUpload: UploadAsset = {
-      id: nextId,
-      filename: selectedFiles[0]?.name ?? `new-upload-${nextId}.png`,
-      type: assetType,
-      mangaId: selectedMangaId,
-      chapterId: assetType === "chapter_page" ? selectedChapter : undefined,
-      sizeMB: selectedFiles[0] ? Number((selectedFiles[0].size / 1024 / 1024).toFixed(1)) : 1.2,
-      sizeLabel: selectedFiles[0] ? `${(selectedFiles[0].size / 1024 / 1024).toFixed(1)} MB` : "1.2 MB",
-      status: "pending",
-      uploadedAt: new Date().toISOString(),
-      visibility,
-      url: "https://assets.mangaverse.com/uploads/mock-file.png",
-      previewGradient: mockMangas.find((m) => m.id === selectedMangaId)?.coverGradient ?? "from-slate-700 via-slate-600 to-slate-500",
-      reason: "Queued for processing",
-    };
-    setUploads((prev) => [newUpload, ...prev]);
+    alert("Preview data only — Appwrite Storage upload is not connected yet.");
     setSelectedFiles([]);
-  }, [assetType, selectedFiles, selectedMangaId, selectedChapter, visibility]);
+  }, []);
 
   const handlePreview = useCallback((upload: UploadAsset) => {
     alert(`Preview UI-only: ${upload.filename}`);
@@ -104,23 +88,17 @@ export function AdminUploadsPageClient() {
     if (!deleteTarget) return;
     setIsDeleting(true);
     await new Promise((resolve) => setTimeout(resolve, 400));
-    setUploads((prev) => prev.filter((upload) => upload.id !== deleteTarget.id));
+    alert("Preview data only — Appwrite Storage delete is not connected yet.");
     setDeleteTarget(null);
     setIsDeleting(false);
   }, [deleteTarget]);
 
   const handleRetry = useCallback((upload: UploadAsset) => {
-    setUploads((prev) =>
-      prev.map((item) =>
-        item.id === upload.id
-          ? { ...item, status: "completed", reason: undefined }
-          : item,
-      ),
-    );
+    alert(`Retry is preview-only for ${upload.filename}.`);
   }, []);
 
   const handleRemoveQueue = useCallback((upload: UploadAsset) => {
-    setUploads((prev) => prev.filter((item) => item.id !== upload.id));
+    alert(`Queue removal is preview-only for ${upload.filename}.`);
   }, []);
 
   const storageBuckets = useMemo(
@@ -149,6 +127,14 @@ export function AdminUploadsPageClient() {
       </div>
 
       <div className="space-y-6">
+        <div className="rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
+          <span className="font-semibold">Preview data only</span>
+          <span className="text-amber-100/80">
+            {" "}
+            - Appwrite Storage upload is not connected yet.
+          </span>
+        </div>
+
         <AdminUploadStats {...stats} />
         <AdminUploadTabs activeTab={activeTab} onChange={handleTabChange} />
 

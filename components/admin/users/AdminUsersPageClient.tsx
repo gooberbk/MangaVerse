@@ -20,7 +20,7 @@ const initialFilters: UserFilters = {
 };
 
 export function AdminUsersPageClient() {
-  const [users, setUsers] = useState<AdminUser[]>(adminUsers);
+  const [users] = useState<AdminUser[]>(adminUsers);
   const [filters, setFilters] = useState<UserFilters>(initialFilters);
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null);
@@ -77,16 +77,7 @@ export function AdminUsersPageClient() {
   }, []);
 
   const handleToggleStatus = useCallback((user: AdminUser) => {
-    setUsers((prev) =>
-      prev.map((item) =>
-        item.id === user.id
-          ? {
-              ...item,
-              status: item.status === "suspended" ? "active" : "suspended",
-            }
-          : item,
-      ),
-    );
+    alert(`Preview data only — real Appwrite user management is not connected yet for ${user.username}.`);
   }, []);
 
   const handleDeleteUser = useCallback((user: AdminUser) => {
@@ -97,9 +88,8 @@ export function AdminUsersPageClient() {
     if (!deleteTarget) return;
     setIsDeleting(true);
     await new Promise((resolve) => setTimeout(resolve, 400));
-    setUsers((prev) => prev.filter((user) => user.id !== deleteTarget.id));
+    alert("Preview data only — real Appwrite user deletion is not connected yet.");
     setDeleteTarget(null);
-    setSelectedUser((prev) => (prev?.id === deleteTarget.id ? null : prev));
     setIsDeleting(false);
   }, [deleteTarget]);
 
@@ -131,6 +121,14 @@ export function AdminUsersPageClient() {
       </div>
 
       <div className="space-y-6">
+        <div className="rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
+          <span className="font-semibold">Preview data only</span>
+          <span className="text-amber-100/80">
+            {" "}
+            - real Appwrite user management is not connected yet.
+          </span>
+        </div>
+
         <AdminUserStats {...stats} />
         <AdminUserFilters filters={filters} onFiltersChange={setFilters} />
 

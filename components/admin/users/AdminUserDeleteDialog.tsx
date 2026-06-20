@@ -22,8 +22,11 @@ export function AdminUserDeleteDialog({ user, isOpen, isLoading, onConfirm, onCa
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-accent-red/20 to-accent-pink/20 text-4xl">
             🗑️
           </div>
-          <h3 className="text-xl font-semibold text-white">Delete user?</h3>
-          <p className="mt-2 text-sm text-muted">This will remove the user from the system and revoke access.</p>
+          <h3 className="text-xl font-semibold text-white">Preview user delete</h3>
+          <p className="mt-2 text-sm text-muted">
+            Real Appwrite user management is not connected yet, so this will not
+            remove any account.
+          </p>
           <p className="mt-3 text-sm text-white/80">{user.username} ({user.email})</p>
         </div>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -31,7 +34,7 @@ export function AdminUserDeleteDialog({ user, isOpen, isLoading, onConfirm, onCa
             Cancel
           </Button>
           <Button variant="primary" size="md" onClick={onConfirm} disabled={isLoading} className="flex-1">
-            {isLoading ? "Deleting..." : "Delete User"}
+            {isLoading ? "Checking..." : "Show Notice"}
           </Button>
         </div>
       </div>

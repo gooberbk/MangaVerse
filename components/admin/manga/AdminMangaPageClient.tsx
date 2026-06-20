@@ -6,10 +6,7 @@ import { AdminShell } from "@/components/admin/AdminShell";
 import { AdminMangaStats } from "./AdminMangaStats";
 import { AdminMangaFilters } from "./AdminMangaFilters";
 import { AdminMangaTable } from "./AdminMangaTable";
-import { AdminMangaFormPanel } from "./AdminMangaFormPanel";
-import { AdminMangaDeleteDialog } from "./AdminMangaDeleteDialog";
 import { AdminMangaEmptyState } from "./AdminMangaEmptyState";
-import { mockMangas } from "@/lib/mock/mangas";
 import type { Manga, MangaStatus } from "@/types/manga";
 
 type FilterOptions = {
@@ -19,8 +16,15 @@ type FilterOptions = {
   sortBy: "updated" | "rating" | "views" | "chapters" | "title";
 };
 
-export function AdminMangaPageClient() {
-  const [mangas, setMangas] = useState<Manga[]>(mockMangas);
+type AdminMangaPageClientProps = {
+  mangas: Manga[];
+  isMockFallback?: boolean;
+};
+
+export function AdminMangaPageClient({
+  mangas,
+  isMockFallback = false,
+}: AdminMangaPageClientProps) {
   const [filters, setFilters] = useState<FilterOptions>({
     search: "",
     status: "all",
@@ -28,16 +32,6 @@ export function AdminMangaPageClient() {
     sortBy: "updated",
   });
 
-  // Form state
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingManga, setEditingManga] = useState<Manga | null>(null);
-  const [isFormLoading, setIsFormLoading] = useState(false);
-
-  // Delete dialog state
-  const [deleteConfirm, setDeleteConfirm] = useState<Manga | null>(null);
-  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
-
-  // Filtered and sorted manga
   const filteredMangas = useMemo(() => {
     let result = [...mangas];
 
@@ -94,81 +88,15 @@ export function AdminMangaPageClient() {
     const completed = mangas.filter((m) => m.status === "completed").length;
     const featured = mangas.filter((m) => m.isFeatured).length;
     const avgRating =
-      mangas.reduce((sum, m) => sum + m.rating.average, 0) / mangas.length;
+      mangas.length > 0
+        ? mangas.reduce((sum, m) => sum + m.rating.average, 0) / mangas.length
+        : 0;
 
     return { ongoing, completed, featured, avgRating };
   }, [mangas]);
 
-  // Handlers
-  const handleAddManga = useCallback(() => {
-    setEditingManga(null);
-    setIsFormOpen(true);
-  }, []);
-
-  const handleEditManga = useCallback((manga: Manga) => {
-    setEditingManga(manga);
-    setIsFormOpen(true);
-  }, []);
-
-  const handleDeleteManga = useCallback((manga: Manga) => {
-    setDeleteConfirm(manga);
-  }, []);
-
-  const handleSaveManga = useCallback(
-    async (formData: Partial<Manga>) => {
-      setIsFormLoading(true);
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      if (editingManga) {
-        // Update existing
-        setMangas((prev) =>
-          prev.map((m) =>
-            m.id === editingManga.id ? { ...m, ...formData } : m,
-          ),
-        );
-      } else {
-        // Add new
-        const newManga: Manga = {
-          id: String(mangas.length + 1),
-          slug: formData.title?.toLowerCase().replace(/\s+/g, "-") || "new-manga",
-          ...formData,
-        } as Manga;
-        setMangas((prev) => [newManga, ...prev]);
-      }
-
-      setIsFormOpen(false);
-      setEditingManga(null);
-      setIsFormLoading(false);
-    },
-    [editingManga, mangas.length],
-  );
-
-  const handleConfirmDelete = useCallback(
-    async (manga: Manga) => {
-      setIsDeleteLoading(true);
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      setMangas((prev) => prev.filter((m) => m.id !== manga.id));
-      setDeleteConfirm(null);
-      setIsDeleteLoading(false);
-    },
-    [],
-  );
-
-  const handleCancelForm = useCallback(() => {
-    setIsFormOpen(false);
-    setEditingManga(null);
-  }, []);
-
-  const handleCancelDelete = useCallback(() => {
-    setDeleteConfirm(null);
-  }, []);
-
-  const handleImportCSV = useCallback(() => {
-    // UI-only - just show a placeholder alert
-    alert("CSV import feature is UI-only. In production, this would allow bulk manga uploads.");
+  const showNotConnectedMessage = useCallback(() => {
+    alert("Real admin editing is not connected yet. Use Appwrite Console for now.");
   }, []);
 
   return (
@@ -188,7 +116,7 @@ export function AdminMangaPageClient() {
           <Button
             variant="secondary"
             size="md"
-            onClick={handleImportCSV}
+            onClick={showNotConnectedMessage}
             className="text-sm"
           >
             📥 Import CSV
@@ -196,7 +124,7 @@ export function AdminMangaPageClient() {
           <Button
             variant="primary"
             size="md"
-            onClick={handleAddManga}
+            onClick={showNotConnectedMessage}
             className="text-sm"
           >
             ➕ Add Manga
@@ -204,7 +132,19 @@ export function AdminMangaPageClient() {
         </div>
       </div>
 
-      {/* Stats Row */}
+      <div className="mb-6 rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
+        {isMockFallback ? (
+          <span className="font-semibold">Mock fallback</span>
+        ) : (
+          <span className="font-semibold">Read-only Appwrite data</span>
+        )}
+        <span className="text-amber-100/80">
+          {" "}
+          - Real admin editing is not connected yet. Use Appwrite Console for
+          create, update, and delete actions.
+        </span>
+      </div>
+
       <AdminMangaStats
         totalManga={mangas.length}
         ongoing={stats.ongoing}
@@ -223,35 +163,25 @@ export function AdminMangaPageClient() {
       {filteredMangas.length > 0 ? (
         <AdminMangaTable
           mangas={filteredMangas}
-          onEdit={handleEditManga}
-          onDelete={handleDeleteManga}
+          onEdit={showNotConnectedMessage}
+          onDelete={showNotConnectedMessage}
         />
       ) : (
-        <AdminMangaEmptyState onResetFilters={() => setFilters({
-          search: "",
-          status: "all",
-          featured: "all",
-          sortBy: "updated",
-        })} />
+        <AdminMangaEmptyState
+          message={
+            mangas.length === 0
+              ? "No Appwrite manga found. Add manga rows in Appwrite Console."
+              : "No manga matches your current filters. Try adjusting your search criteria or reset the filters to see all titles."
+          }
+          actionLabel={mangas.length === 0 ? undefined : "Reset Filters"}
+          onResetFilters={() => setFilters({
+            search: "",
+            status: "all",
+            featured: "all",
+            sortBy: "updated",
+          })}
+        />
       )}
-
-      {/* Form Panel */}
-      <AdminMangaFormPanel
-        manga={editingManga}
-        isOpen={isFormOpen}
-        isLoading={isFormLoading}
-        onSave={handleSaveManga}
-        onCancel={handleCancelForm}
-      />
-
-      {/* Delete Dialog */}
-      <AdminMangaDeleteDialog
-        manga={deleteConfirm}
-        isOpen={!!deleteConfirm}
-        isLoading={isDeleteLoading}
-        onConfirm={() => deleteConfirm && handleConfirmDelete(deleteConfirm)}
-        onCancel={handleCancelDelete}
-      />
     </AdminShell>
   );
 }

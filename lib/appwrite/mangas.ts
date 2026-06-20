@@ -214,6 +214,42 @@ export async function listChaptersByMangaId(mangaId: string): Promise<ChapterDoc
   }
 }
 
+export async function listChapters(): Promise<ChapterDocument[]> {
+  assertChaptersConfigured();
+
+  try {
+    const result = await databases.listDocuments<ChapterDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.chapters,
+      [
+        Query.orderDesc("chapterNumber"),
+      ],
+    );
+
+    return result.documents;
+  } catch (error) {
+    console.warn(
+      "Failed to list chapters ordered by chapterNumber. Retrying with number.",
+      error,
+    );
+  }
+
+  try {
+    const result = await databases.listDocuments<ChapterDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.chapters,
+      [
+        Query.orderDesc("number"),
+      ],
+    );
+
+    return result.documents;
+  } catch (error) {
+    console.error("Failed to list chapters:", error);
+    return [];
+  }
+}
+
 export async function getChapterBySlug(mangaSlug: string, chapterSlug: string): Promise<ChapterDocument | null> {
   assertChaptersConfigured();
 

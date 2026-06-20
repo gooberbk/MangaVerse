@@ -108,7 +108,7 @@ function toNumber(value: string, fallback: number) {
 export function AdminSettingsPageClient() {
   const [settings, setSettings] = useState<AdminSettings>(() => createDefaultSettings());
   const [showSuccess, setShowSuccess] = useState(false);
-  const [toastMessage, setToastMessage] = useState("Settings saved successfully.");
+  const [toastMessage, setToastMessage] = useState("Settings saved locally in this preview.");
   const [isSaving, setIsSaving] = useState(false);
   const [isClearingCache, setIsClearingCache] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
@@ -222,7 +222,7 @@ export function AdminSettingsPageClient() {
     setIsSaving(true);
     await new Promise((resolve) => setTimeout(resolve, 800));
     setIsSaving(false);
-    showToast("Settings saved successfully.");
+    showToast("Settings saved locally in this preview.");
   }, [showToast]);
 
   const handleResetConfirm = useCallback(async () => {
@@ -247,6 +247,14 @@ export function AdminSettingsPageClient() {
       description="Tune the UI-only MangaVerse control center."
     >
       <div className="space-y-6">
+        <div className="rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
+          <span className="font-semibold">Local preview settings only</span>
+          <span className="text-amber-100/80">
+            {" "}
+            - not persisted to backend.
+          </span>
+        </div>
+
         <section className="glass relative overflow-hidden rounded-2xl p-5 shadow-2xl shadow-black/25 sm:p-6">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-accent-purple via-accent-pink to-accent-blue" />
 

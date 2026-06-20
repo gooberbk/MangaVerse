@@ -7,7 +7,12 @@ import { formatPublishedDate } from "@/lib/utils";
 import Link from "next/link";
 
 type AdminChapterTableProps = {
-  chapters: (Chapter & { mangaTitle: string; coverGradient: string; status?: string })[];
+  chapters: (Chapter & {
+    mangaTitle: string;
+    mangaSlug?: string;
+    coverGradient: string;
+    status?: string;
+  })[];
   onEdit: (c: Chapter) => void;
   onDelete: (c: Chapter) => void;
 };
@@ -49,7 +54,7 @@ export function AdminChapterTable({ chapters, onEdit, onDelete }: AdminChapterTa
                   <td className="px-6 py-4 text-sm text-muted">{formatPublishedDate(ch.publishedAt)}</td>
                   <td className="px-6 py-4 text-sm">
                     <div className="flex items-center justify-center gap-2">
-                      <Link href={`/manga/${ch.mangaTitle.toLowerCase().replace(/\s+/g, "-")}/chapter/${ch.number}`} className="text-xs">
+                      <Link href={ch.mangaSlug ? `/manga/${ch.mangaSlug}/chapter/${ch.number}` : "#"} className="text-xs">
                         <Button variant="ghost" size="sm">▶️ View</Button>
                       </Link>
                       <Button variant="ghost" size="sm" onClick={() => onEdit(ch)}>✏️</Button>
@@ -94,7 +99,7 @@ export function AdminChapterTable({ chapters, onEdit, onDelete }: AdminChapterTa
             </div>
 
             <div className="flex gap-2">
-              <Link href={`/manga/${ch.mangaTitle.toLowerCase().replace(/\s+/g, "-")}/chapter/${ch.number}`} className="flex-1">
+              <Link href={ch.mangaSlug ? `/manga/${ch.mangaSlug}/chapter/${ch.number}` : "#"} className="flex-1">
                 <Button variant="secondary" size="sm" className="flex-1">View Reader</Button>
               </Link>
               <Button variant="secondary" size="sm" onClick={() => onEdit(ch)} className="flex-1">Edit</Button>

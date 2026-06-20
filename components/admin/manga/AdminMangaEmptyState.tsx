@@ -2,9 +2,15 @@ import { Button } from "@/components/ui/Button";
 
 type AdminMangaEmptyStateProps = {
   onResetFilters: () => void;
+  message?: string;
+  actionLabel?: string;
 };
 
-export function AdminMangaEmptyState({ onResetFilters }: AdminMangaEmptyStateProps) {
+export function AdminMangaEmptyState({
+  onResetFilters,
+  message = "No manga matches your current filters. Try adjusting your search criteria or reset the filters to see all titles.",
+  actionLabel = "Reset Filters",
+}: AdminMangaEmptyStateProps) {
   return (
     <div className="glass rounded-2xl p-12 text-center shadow-lg shadow-black/20">
       {/* Background gradient accent */}
@@ -18,11 +24,13 @@ export function AdminMangaEmptyState({ onResetFilters }: AdminMangaEmptyStatePro
         </div>
         <h3 className="mb-2 text-xl font-semibold text-white">No Manga Found</h3>
         <p className="mb-6 text-muted max-w-sm mx-auto">
-          No manga matches your current filters. Try adjusting your search criteria or reset the filters to see all titles.
+          {message}
         </p>
-        <Button variant="primary" size="md" onClick={onResetFilters}>
-          Reset Filters
-        </Button>
+        {actionLabel && (
+          <Button variant="primary" size="md" onClick={onResetFilters}>
+            {actionLabel}
+          </Button>
+        )}
       </div>
     </div>
   );

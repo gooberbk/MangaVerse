@@ -6,12 +6,9 @@ import { Button } from "@/components/ui/Button";
 import { AdminChapterStats } from "./AdminChapterStats";
 import { AdminChapterFilters } from "./AdminChapterFilters";
 import { AdminChapterTable } from "./AdminChapterTable";
-import { AdminChapterFormPanel } from "./AdminChapterFormPanel";
-import { AdminChapterDeleteDialog } from "./AdminChapterDeleteDialog";
 import { AdminChapterEmptyState } from "./AdminChapterEmptyState";
-import { mockChapters } from "@/lib/mock/chapters";
-import { mockMangas } from "@/lib/mock/mangas";
 import type { Chapter } from "@/types/chapter";
+import type { Manga } from "@/types/manga";
 
 type FilterOptions = {
   search: string;
@@ -20,30 +17,25 @@ type FilterOptions = {
   sortBy: "updated" | "newest" | "oldest" | "pages" | "manga";
 };
 
-export function AdminChaptersPageClient() {
-  type EnrichedChapter = Chapter & { mangaTitle: string; coverGradient: string; status?: string };
+type EnrichedChapter = Chapter & {
+  mangaTitle: string;
+  mangaSlug?: string;
+  coverGradient: string;
+  status?: string;
+};
 
-  const [chapters, setChapters] = useState<EnrichedChapter[]>(() => {
-    // Enrich chapters with manga info
-    return mockChapters.map((c) => {
-      const manga = mockMangas.find((m) => m.id === c.mangaId);
-      return {
-        ...c,
-        mangaTitle: manga?.title ?? "Unknown",
-        coverGradient: manga?.coverGradient ?? "from-slate-700 via-slate-600 to-slate-500",
-        status: c.publishedAt ? "published" : "draft",
-      } as EnrichedChapter;
-    });
-  });
+type AdminChaptersPageClientProps = {
+  chapters: EnrichedChapter[];
+  mangas: Manga[];
+  isMockFallback?: boolean;
+};
 
+export function AdminChaptersPageClient({
+  chapters,
+  mangas,
+  isMockFallback = false,
+}: AdminChaptersPageClientProps) {
   const [filters, setFilters] = useState<FilterOptions>({ search: "", mangaId: "all", status: "all", sortBy: "updated" });
-
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editing, setEditing] = useState<Chapter | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
-
-  const [deleteTarget, setDeleteTarget] = useState<Chapter | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
 
   const filtered = useMemo(() => {
     let result = [...chapters];
@@ -95,46 +87,8 @@ export function AdminChaptersPageClient() {
     return { total, published, drafts, scheduled, avg };
   }, [chapters]);
 
-  const handleAdd = useCallback(() => { setEditing(null); setIsFormOpen(true); }, []);
-  const handleEdit = useCallback((c: Chapter) => { setEditing(c); setIsFormOpen(true); }, []);
-  const handleDelete = useCallback((c: Chapter) => setDeleteTarget(c), []);
-
-  const handleSave = useCallback(async (data: Partial<Chapter> & { mangaId: string }) => {
-    setIsSaving(true);
-    await new Promise((r) => setTimeout(r, 400));
-    if (editing) {
-      setChapters((prev) => prev.map((p) => p.id === editing.id ? { ...p, ...data } as EnrichedChapter : p));
-    } else {
-      const newChap: EnrichedChapter = {
-        id: `local-${Date.now()}`,
-        slug: `ch-${data.number ?? 1}`,
-        mangaId: data.mangaId,
-        number: data.number ?? 1,
-        title: data.title ?? "Untitled",
-        publishedAt: data.publishedAt ?? new Date().toISOString(),
-        pageCount: data.pageCount ?? 0,
-        mangaTitle: mockMangas.find((m) => m.id === data.mangaId)?.title ?? "Unknown",
-        coverGradient: mockMangas.find((m) => m.id === data.mangaId)?.coverGradient ?? "from-slate-700 via-slate-600 to-slate-500",
-        status: data.publishedAt ? "published" : "draft",
-      };
-      setChapters((prev) => [newChap, ...prev]);
-    }
-    setIsSaving(false);
-    setIsFormOpen(false);
-    setEditing(null);
-  }, [editing]);
-
-  const confirmDelete = useCallback(async () => {
-    if (!deleteTarget) return;
-    setIsDeleting(true);
-    await new Promise((r) => setTimeout(r, 400));
-    setChapters((prev) => prev.filter((c) => c.id !== deleteTarget.id));
-    setDeleteTarget(null);
-    setIsDeleting(false);
-  }, [deleteTarget]);
-
-  const handleImport = useCallback(() => {
-    alert("Bulk import is UI-only in this demo.");
+  const showNotConnectedMessage = useCallback(() => {
+    alert("Real admin editing is not connected yet. Use Appwrite Console for now.");
   }, []);
 
   return (
@@ -145,24 +99,41 @@ export function AdminChaptersPageClient() {
           <p className="mt-2 text-muted">Manage and publish chapters across your catalog</p>
         </div>
         <div className="flex gap-3 flex-wrap sm:flex-nowrap">
-          <Button variant="secondary" size="md" onClick={handleImport} className="text-sm">📥 Bulk Import</Button>
-          <Button variant="primary" size="md" onClick={handleAdd} className="text-sm">➕ Add Chapter</Button>
+          <Button variant="secondary" size="md" onClick={showNotConnectedMessage} className="text-sm">📥 Bulk Import</Button>
+          <Button variant="primary" size="md" onClick={showNotConnectedMessage} className="text-sm">➕ Add Chapter</Button>
         </div>
+      </div>
+
+      <div className="mb-6 rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
+        {isMockFallback ? (
+          <span className="font-semibold">Mock fallback</span>
+        ) : (
+          <span className="font-semibold">Read-only Appwrite data</span>
+        )}
+        <span className="text-amber-100/80">
+          {" "}
+          - Real admin editing is not connected yet. Use Appwrite Console for
+          chapter create, update, and delete actions.
+        </span>
       </div>
 
       <AdminChapterStats totalChapters={stats.total} published={stats.published} drafts={stats.drafts} scheduled={stats.scheduled} avgPages={stats.avg} />
 
-      <AdminChapterFilters filters={filters} onFiltersChange={setFilters} mangas={mockMangas} />
+      <AdminChapterFilters filters={filters} onFiltersChange={setFilters} mangas={mangas} />
 
       {filtered.length > 0 ? (
-        <AdminChapterTable chapters={filtered} onEdit={handleEdit} onDelete={handleDelete} />
+        <AdminChapterTable chapters={filtered} onEdit={showNotConnectedMessage} onDelete={showNotConnectedMessage} />
       ) : (
-        <AdminChapterEmptyState onReset={() => setFilters({ search: "", mangaId: "all", status: "all", sortBy: "updated" })} />
+        <AdminChapterEmptyState
+          message={
+            chapters.length === 0
+              ? "No Appwrite chapters found. Add chapter rows in Appwrite Console."
+              : "No chapters match your current filters. Try expanding your search or reset the filters to see all chapters."
+          }
+          actionLabel={chapters.length === 0 ? undefined : "Reset Filters"}
+          onReset={() => setFilters({ search: "", mangaId: "all", status: "all", sortBy: "updated" })}
+        />
       )}
-
-      <AdminChapterFormPanel chapter={editing} mangas={mockMangas} isOpen={isFormOpen} isLoading={isSaving} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditing(null); }} />
-
-      <AdminChapterDeleteDialog chapter={deleteTarget} isOpen={!!deleteTarget} isLoading={isDeleting} onConfirm={confirmDelete} onCancel={() => setDeleteTarget(null)} />
     </AdminShell>
   );
 }
