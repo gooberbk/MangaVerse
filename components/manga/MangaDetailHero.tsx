@@ -13,13 +13,18 @@ import Link from "next/link";
 
 type MangaDetailHeroProps = {
   manga: Manga;
-  latestChapterNumber: number;
+  readableChapterNumber: number | null;
 };
 
 export function MangaDetailHero({
   manga,
-  latestChapterNumber,
+  readableChapterNumber,
 }: MangaDetailHeroProps) {
+  const readableChapterHref =
+    readableChapterNumber !== null
+      ? `/manga/${manga.slug}/chapter/${readableChapterNumber}`
+      : null;
+
   return (
     <section className="relative overflow-hidden">
       <div
@@ -127,20 +132,43 @@ export function MangaDetailHero({
             </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href={`/manga/${manga.slug}/chapter/1`}
-                className="inline-flex h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink px-6 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition-all hover:shadow-purple-500/50 hover:brightness-110"
-              >
-                <PlayIcon />
-                Start Reading
-              </Link>
-              <Link
-                href={`/manga/${manga.slug}/chapter/${latestChapterNumber}`}
-                className="glass glass-hover inline-flex h-11 items-center gap-2 rounded-xl px-6 text-sm font-semibold text-white"
-              >
-                <BookIcon />
-                Continue Reading
-              </Link>
+              {readableChapterHref ? (
+                <>
+                  <Link
+                    href={readableChapterHref}
+                    className="inline-flex h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink px-6 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition-all hover:shadow-purple-500/50 hover:brightness-110"
+                  >
+                    <PlayIcon />
+                    Start Reading
+                  </Link>
+                  <Link
+                    href={readableChapterHref}
+                    className="glass glass-hover inline-flex h-11 items-center gap-2 rounded-xl px-6 text-sm font-semibold text-white"
+                  >
+                    <BookIcon />
+                    Continue Reading
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    disabled
+                    className="inline-flex h-11 cursor-not-allowed items-center gap-2 rounded-xl bg-white/10 px-6 text-sm font-semibold text-muted opacity-70"
+                  >
+                    <PlayIcon />
+                    No Chapters Yet
+                  </button>
+                  <button
+                    type="button"
+                    disabled
+                    className="glass inline-flex h-11 cursor-not-allowed items-center gap-2 rounded-xl px-6 text-sm font-semibold text-muted opacity-70"
+                  >
+                    <BookIcon />
+                    Continue Unavailable
+                  </button>
+                </>
+              )}
               <button
                 type="button"
                 className="glass glass-hover inline-flex h-11 items-center gap-2 rounded-xl px-6 text-sm font-semibold text-white"

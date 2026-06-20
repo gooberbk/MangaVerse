@@ -100,8 +100,15 @@ export default async function MangaDetailPage({ params }: MangaDetailPageProps) 
   }
 
   const related = getRelatedMangas(slug);
-  const latestChapterNumber =
-    chapters[0]?.number ?? manga.chapterCount;
+  const readableChapterNumber =
+    chapters
+      .map((chapter) => chapter.number)
+      .filter((number) => Number.isFinite(number) && number > 0)
+      .sort((a, b) => a - b)[0] ?? null;
+  const mangaWithChapterCount = {
+    ...manga,
+    chapterCount: chapters.length > 0 ? chapters.length : manga.chapterCount,
+  };
 
   return (
     <>
@@ -109,12 +116,12 @@ export default async function MangaDetailPage({ params }: MangaDetailPageProps) 
 
       <main>
         <MangaDetailHero
-          manga={manga}
-          latestChapterNumber={latestChapterNumber}
+          manga={mangaWithChapterCount}
+          readableChapterNumber={readableChapterNumber}
         />
 
         <div className="mx-auto max-w-7xl space-y-12 px-4 py-12 sm:space-y-16 sm:px-6 lg:px-8">
-          <MangaInfoPanel manga={manga} />
+          <MangaInfoPanel manga={mangaWithChapterCount} />
 
           <ChapterList
             mangaSlug={manga.slug}
