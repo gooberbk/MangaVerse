@@ -16,19 +16,29 @@ type InfoRow = {
   highlight?: boolean;
 };
 
+function cleanInfoValue(value: string | number) {
+  const text = String(value).trim();
+  if (!text || text.toLowerCase() === "unknown") return "Not specified";
+  return text;
+}
+
+function formatVoteCount(count: number) {
+  return Number.isFinite(count) && count > 0 ? count.toLocaleString() : "0";
+}
+
 export function MangaInfoPanel({ manga }: MangaInfoPanelProps) {
   const rows: InfoRow[] = [
     { label: "Status", value: statusLabel(manga.status), highlight: true },
-    { label: "Release Year", value: String(manga.releaseYear) },
-    { label: "Author", value: manga.author },
-    { label: "Artist", value: manga.artist },
-    { label: "Language", value: manga.language },
-    { label: "Demographic", value: manga.demographic },
+    { label: "Release Year", value: cleanInfoValue(manga.releaseYear) },
+    { label: "Author", value: cleanInfoValue(manga.author) },
+    { label: "Artist", value: cleanInfoValue(manga.artist) },
+    { label: "Language", value: cleanInfoValue(manga.language) },
+    { label: "Demographic", value: cleanInfoValue(manga.demographic) },
     { label: "Total Chapters", value: String(manga.chapterCount) },
     { label: "Bookmarks", value: formatBookmarks(manga.totalBookmarks) },
     {
       label: "Rating",
-      value: `${formatRating(manga.rating.average)} / 10 (${manga.rating.count.toLocaleString()} votes)`,
+      value: `${formatRating(manga.rating.average)} / 10 (${formatVoteCount(manga.rating.count)} votes)`,
       highlight: true,
     },
   ];

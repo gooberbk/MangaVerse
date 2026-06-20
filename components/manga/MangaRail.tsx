@@ -32,11 +32,20 @@ export function MangaRail({
         </Link>
       </div>
 
-      <div className="scrollbar-hide flex gap-4 overflow-x-auto px-4 pb-2 sm:px-6 lg:px-8">
-        {mangas.map((manga) => (
-          <MangaCard key={manga.id} manga={manga} />
-        ))}
-      </div>
+      {mangas.length > 0 ? (
+        <div className="scrollbar-hide flex gap-4 overflow-x-auto px-4 pb-2 sm:px-6 lg:px-8">
+          {mangas.map((manga) => (
+            <MangaCard key={manga.id} manga={manga} />
+          ))}
+        </div>
+      ) : (
+        <div className="mx-4 rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center sm:mx-6 lg:mx-8">
+          <p className="text-sm font-medium text-white">No series to show yet</p>
+          <p className="mt-1 text-xs text-muted">
+            Add manga rows in Appwrite Console to populate this section.
+          </p>
+        </div>
+      )}
     </section>
   );
 }

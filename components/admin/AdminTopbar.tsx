@@ -12,15 +12,14 @@ export function AdminTopbar({ title, description }: AdminTopbarProps) {
   return (
     <header className="border-b border-white/10 bg-surface/50 backdrop-blur-xl">
       <div className="flex items-center justify-between py-4 pl-16 pr-4 lg:px-8">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold text-white">{title}</h1>
+        <div className="min-w-0 flex flex-col gap-1">
+          <h1 className="truncate text-xl font-bold text-white sm:text-2xl">{title}</h1>
           {description && (
-            <p className="text-sm text-muted">{description}</p>
+            <p className="hidden text-sm text-muted sm:block">{description}</p>
           )}
         </div>
 
-        <div className="flex items-center gap-4">
-          {/* Search */}
+        <div className="flex shrink-0 items-center gap-2 sm:gap-4">
           <div className="hidden md:flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -39,12 +38,12 @@ export function AdminTopbar({ title, description }: AdminTopbarProps) {
             </svg>
             <input
               type="text"
-              placeholder="Search... (⌘K)"
-              className="w-48 bg-transparent text-sm text-white placeholder:text-muted/50 focus:outline-none"
+              placeholder="Preview search"
+              disabled
+              className="w-32 bg-transparent text-sm text-white placeholder:text-muted/50 focus:outline-none lg:w-48"
             />
           </div>
 
-          {/* New Manga Button */}
           <Link href="/admin/manga">
             <Button variant="primary" size="md">
               <svg
@@ -61,7 +60,7 @@ export function AdminTopbar({ title, description }: AdminTopbarProps) {
                 <path d="M5 12h14" />
                 <path d="M12 5v14" />
               </svg>
-              New Manga
+              Manga List
             </Button>
           </Link>
 

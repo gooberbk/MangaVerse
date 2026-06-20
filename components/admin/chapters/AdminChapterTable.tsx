@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
+import { MangaCover } from "@/components/manga/MangaCover";
 import type { Chapter } from "@/types/chapter";
 import { cn } from "@/lib/utils";
 import { formatPublishedDate } from "@/lib/utils";
@@ -17,6 +18,22 @@ type AdminChapterTableProps = {
   onDelete: (c: Chapter) => void;
 };
 
+function chapterStatusLabel(status?: string) {
+  if (status === "draft") return "Draft";
+  if (status === "scheduled") return "Scheduled";
+  return "Published";
+}
+
+function chapterStatusColor(status?: string) {
+  if (status === "draft") {
+    return "border-amber-500/30 bg-amber-500/15 text-amber-200";
+  }
+  if (status === "scheduled") {
+    return "border-blue-500/30 bg-blue-500/15 text-blue-200";
+  }
+  return "border-emerald-500/30 bg-emerald-500/15 text-emerald-200";
+}
+
 export function AdminChapterTable({ chapters, onEdit, onDelete }: AdminChapterTableProps) {
   return (
     <div>
@@ -30,7 +47,7 @@ export function AdminChapterTable({ chapters, onEdit, onDelete }: AdminChapterTa
                 <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted">Title</th>
                 <th className="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-muted">Pages</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted">Published</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted">Updated</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted">Status</th>
                 <th className="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-muted">Actions</th>
               </tr>
             </thead>
@@ -39,9 +56,14 @@ export function AdminChapterTable({ chapters, onEdit, onDelete }: AdminChapterTa
                 <tr key={ch.id} className="transition-colors hover:bg-white/5">
                   <td className="px-6 py-4 text-sm">
                     <div className="flex items-center gap-3">
-                      <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg shrink-0 text-lg bg-gradient-to-br", ch.coverGradient)}>
-                        📚
-                      </div>
+                      <MangaCover
+                        manga={{
+                          title: ch.mangaTitle,
+                          coverGradient: ch.coverGradient,
+                        }}
+                        compact
+                        className="h-10 w-10 shrink-0 rounded-lg"
+                      />
                       <div className="min-w-0">
                         <p className="font-medium text-white">{ch.mangaTitle}</p>
                       </div>
@@ -51,12 +73,20 @@ export function AdminChapterTable({ chapters, onEdit, onDelete }: AdminChapterTa
                   <td className="px-6 py-4 text-sm text-white">{ch.title}</td>
                   <td className="px-6 py-4 text-center text-sm text-white">{ch.pageCount}</td>
                   <td className="px-6 py-4 text-sm text-muted">{formatPublishedDate(ch.publishedAt)}</td>
-                  <td className="px-6 py-4 text-sm text-muted">{formatPublishedDate(ch.publishedAt)}</td>
+                  <td className="px-6 py-4 text-sm">
+                    <span className={cn("inline-flex rounded-full border px-2.5 py-1 text-xs font-medium", chapterStatusColor(ch.status))}>
+                      {chapterStatusLabel(ch.status)}
+                    </span>
+                  </td>
                   <td className="px-6 py-4 text-sm">
                     <div className="flex items-center justify-center gap-2">
-                      <Link href={ch.mangaSlug ? `/manga/${ch.mangaSlug}/chapter/${ch.number}` : "#"} className="text-xs">
-                        <Button variant="ghost" size="sm">▶️ View</Button>
-                      </Link>
+                      {ch.mangaSlug ? (
+                        <Link href={`/manga/${ch.mangaSlug}/chapter/${ch.number}`} className="text-xs">
+                          <Button variant="ghost" size="sm">View</Button>
+                        </Link>
+                      ) : (
+                        <Button variant="ghost" size="sm" disabled>Unavailable</Button>
+                      )}
                       <Button variant="ghost" size="sm" onClick={() => onEdit(ch)}>✏️</Button>
                       <Button variant="ghost" size="sm" onClick={() => onDelete(ch)} className="hover:text-rose-400">🗑️</Button>
                     </div>
@@ -73,9 +103,14 @@ export function AdminChapterTable({ chapters, onEdit, onDelete }: AdminChapterTa
           <div key={ch.id} className="glass rounded-xl p-4 shadow-lg shadow-black/20">
             <div className="flex items-start justify-between mb-4">
               <div className="flex gap-3 flex-1 min-w-0">
-                <div className={cn("flex h-12 w-12 items-center justify-center rounded-lg shrink-0 text-xl bg-gradient-to-br", ch.coverGradient)}>
-                  📚
-                </div>
+                <MangaCover
+                  manga={{
+                    title: ch.mangaTitle,
+                    coverGradient: ch.coverGradient,
+                  }}
+                  compact
+                  className="h-12 w-12 shrink-0 rounded-lg"
+                />
                 <div className="min-w-0 flex-1">
                   <h4 className="font-semibold text-white truncate">{ch.mangaTitle} — Ch. {ch.number}</h4>
                   <p className="text-xs text-muted truncate">{ch.title}</p>
@@ -93,15 +128,21 @@ export function AdminChapterTable({ chapters, onEdit, onDelete }: AdminChapterTa
                 <p className="font-semibold text-white">{formatPublishedDate(ch.publishedAt)}</p>
               </div>
               <div>
-                <p className="text-muted text-xs mb-1">Updated</p>
-                <p className="font-semibold text-white">{formatPublishedDate(ch.publishedAt)}</p>
+                <p className="text-muted text-xs mb-1">Status</p>
+                <p className={cn("inline-flex rounded-full border px-2 py-0.5 text-xs font-semibold", chapterStatusColor(ch.status))}>
+                  {chapterStatusLabel(ch.status)}
+                </p>
               </div>
             </div>
 
             <div className="flex gap-2">
-              <Link href={ch.mangaSlug ? `/manga/${ch.mangaSlug}/chapter/${ch.number}` : "#"} className="flex-1">
-                <Button variant="secondary" size="sm" className="flex-1">View Reader</Button>
-              </Link>
+              {ch.mangaSlug ? (
+                <Link href={`/manga/${ch.mangaSlug}/chapter/${ch.number}`} className="flex-1">
+                  <Button variant="secondary" size="sm" className="flex-1">View Reader</Button>
+                </Link>
+              ) : (
+                <Button variant="secondary" size="sm" className="flex-1" disabled>Unavailable</Button>
+              )}
               <Button variant="secondary" size="sm" onClick={() => onEdit(ch)} className="flex-1">Edit</Button>
               <Button variant="secondary" size="sm" onClick={() => onDelete(ch)} className="flex-1 text-rose-400 hover:text-rose-300">Delete</Button>
             </div>

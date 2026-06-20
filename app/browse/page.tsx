@@ -7,7 +7,7 @@ import {
   getCatalogStats,
 } from "@/lib/browse/catalog";
 import { getAllGenres, mockMangas } from "@/lib/mock";
-import { listMangas } from "@/lib/appwrite/mangas";
+import { listChapters, listMangas } from "@/lib/appwrite/mangas";
 import { mapMangaDocumentsToMangas } from "@/lib/appwrite/mapping";
 import type { Metadata } from "next";
 
@@ -19,9 +19,25 @@ export const metadata: Metadata = {
 
 async function getMangas() {
   try {
-    const docs = await listMangas();
+    const [docs, chapters] = await Promise.all([listMangas(), listChapters()]);
     if (docs.length > 0) {
-      return mapMangaDocumentsToMangas(docs);
+      const chapterCounts = new Map<string, number>();
+
+      for (const chapter of chapters) {
+        if (typeof chapter.mangaId !== "string" || chapter.mangaId.length === 0) {
+          continue;
+        }
+
+        chapterCounts.set(
+          chapter.mangaId,
+          (chapterCounts.get(chapter.mangaId) ?? 0) + 1,
+        );
+      }
+
+      return mapMangaDocumentsToMangas(docs).map((manga) => ({
+        ...manga,
+        chapterCount: chapterCounts.get(manga.id) ?? manga.chapterCount,
+      }));
     }
   } catch (error) {
     console.error("Failed to fetch mangas from Appwrite:", error);

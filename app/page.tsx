@@ -15,15 +15,40 @@ import {
 import {
   getFeaturedMangas,
   getLatestMangas,
+  listChapters,
   getPopularMangas,
 } from "@/lib/appwrite/mangas";
 import { mapMangaDocumentsToMangas } from "@/lib/appwrite/mapping";
+import type { Manga } from "@/types/manga";
+
+function buildChapterCountMap(chapters: { mangaId?: unknown }[]) {
+  const counts = new Map<string, number>();
+
+  for (const chapter of chapters) {
+    if (typeof chapter.mangaId !== "string" || chapter.mangaId.length === 0) {
+      continue;
+    }
+
+    counts.set(chapter.mangaId, (counts.get(chapter.mangaId) ?? 0) + 1);
+  }
+
+  return counts;
+}
+
+function applyChapterCounts(mangas: Manga[], counts: Map<string, number>) {
+  return mangas.map((manga) => ({
+    ...manga,
+    chapterCount: counts.get(manga.id) ?? manga.chapterCount,
+  }));
+}
 
 async function getTrendingMangas() {
   try {
     const docs = await getFeaturedMangas();
     if (docs.length > 0) {
-      return mapMangaDocumentsToMangas(docs).filter((m) => m.isTrending);
+      const mangas = mapMangaDocumentsToMangas(docs);
+      const trending = mangas.filter((m) => m.isTrending);
+      return trending.length > 0 ? trending : mangas.slice(0, 6);
     }
   } catch (error) {
     console.error("Failed to fetch trending mangas from Appwrite:", error);
@@ -69,12 +94,18 @@ async function getFeaturedManga() {
 }
 
 export default async function HomePage() {
-  const [trending, latest, popular, featured] = await Promise.all([
+  const [trendingData, latestData, popularData, featuredData, chapterDocs] = await Promise.all([
     getTrendingMangas(),
     getLatestUpdates(),
     getPopularThisWeek(),
     getFeaturedManga(),
+    listChapters(),
   ]);
+  const chapterCounts = buildChapterCountMap(chapterDocs);
+  const trending = applyChapterCounts(trendingData, chapterCounts);
+  const latest = applyChapterCounts(latestData, chapterCounts);
+  const popular = applyChapterCounts(popularData, chapterCounts);
+  const featured = applyChapterCounts([featuredData], chapterCounts)[0];
   const genres = getAllGenres();
 
   return (

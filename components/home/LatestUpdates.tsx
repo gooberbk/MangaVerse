@@ -1,3 +1,4 @@
+import { MangaCover } from "@/components/manga/MangaCover";
 import {
   cn,
   formatUpdatedDate,
@@ -30,11 +31,10 @@ export function LatestUpdates({ mangas }: LatestUpdatesProps) {
             href={`/manga/${manga.slug}`}
             className="glass glass-hover group flex items-center gap-4 rounded-xl p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/5"
           >
-            <div
-              className={cn(
-                "h-16 w-12 shrink-0 rounded-lg bg-gradient-to-br shadow-md",
-                manga.coverGradient,
-              )}
+            <MangaCover
+              manga={manga}
+              compact
+              className="h-16 w-12 shrink-0 rounded-lg shadow-md"
             />
             <div className="min-w-0 flex-1">
               <h3 className="truncate font-semibold text-white transition-colors group-hover:text-accent-pink">

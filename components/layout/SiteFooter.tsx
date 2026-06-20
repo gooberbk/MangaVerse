@@ -7,16 +7,16 @@ const footerLinks = {
     { href: "/popular", label: "Popular" },
     { href: "/genres", label: "Genres" },
   ],
-  company: [
-    { href: "/about", label: "About" },
-    { href: "/careers", label: "Careers" },
-    { href: "/press", label: "Press" },
-    { href: "/contact", label: "Contact" },
+  reader: [
+    { href: "/library", label: "Library" },
+    { href: "/account", label: "Account" },
+    { href: "/login", label: "Sign In" },
+    { href: "/register", label: "Create Account" },
   ],
-  legal: [
-    { href: "/terms", label: "Terms" },
-    { href: "/privacy", label: "Privacy" },
-    { href: "/cookies", label: "Cookies" },
+  demo: [
+    { href: "/manga/test", label: "Demo Manga" },
+    { href: "/manga/test/chapter/1", label: "Demo Reader" },
+    { href: "/admin/manga", label: "Admin Preview" },
   ],
 };
 
@@ -41,8 +41,8 @@ export function SiteFooter() {
           </div>
 
           <FooterColumn title="Discover" links={footerLinks.discover} />
-          <FooterColumn title="Company" links={footerLinks.company} />
-          <FooterColumn title="Legal" links={footerLinks.legal} />
+          <FooterColumn title="Reader" links={footerLinks.reader} />
+          <FooterColumn title="MVP Demo" links={footerLinks.demo} />
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 sm:flex-row">
@@ -50,7 +50,7 @@ export function SiteFooter() {
             &copy; {new Date().getFullYear()} MangaVerse. All rights reserved.
           </p>
           <p className="text-xs text-muted/60">
-            Fictional content only — no copyrighted material used.
+            Fictional demo content only. Appwrite-backed reading MVP.
           </p>
         </div>
       </div>

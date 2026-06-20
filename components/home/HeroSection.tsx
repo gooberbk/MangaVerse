@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/Badge";
+import { MangaCover } from "@/components/manga/MangaCover";
 import { StatBadge } from "@/components/ui/StatBadge";
 import {
   cn,
@@ -15,6 +16,12 @@ type HeroSectionProps = {
 };
 
 export function HeroSection({ manga }: HeroSectionProps) {
+  const author = cleanDisplayText(manga.author, "Creator TBA");
+  const ratingCount =
+    Number.isFinite(manga.rating.count) && manga.rating.count > 0
+      ? manga.rating.count.toLocaleString()
+      : "0";
+
   return (
     <section className="relative overflow-hidden">
       <div
@@ -33,21 +40,23 @@ export function HeroSection({ manga }: HeroSectionProps) {
           </Badge>
 
           <div className="flex flex-wrap justify-center gap-2 lg:justify-start">
-            {manga.genres.map((genre) => (
-              <span
-                key={genre}
-                className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-muted"
-              >
-                {genre}
-              </span>
-            ))}
+            {(manga.genres.length > 0 ? manga.genres : ["Manga"]).map(
+              (genre) => (
+                <span
+                  key={genre}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-muted"
+                >
+                  {genre}
+                </span>
+              ),
+            )}
           </div>
 
           <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             {manga.title}
           </h1>
 
-          <p className="mt-2 text-sm text-muted">by {manga.author}</p>
+          <p className="mt-2 text-sm text-muted">by {author}</p>
 
           <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
             {manga.description}
@@ -58,7 +67,7 @@ export function HeroSection({ manga }: HeroSectionProps) {
               <StarIcon />
               {formatRating(manga.rating.average)}
               <span className="text-sm font-normal text-muted">
-                ({manga.rating.count.toLocaleString()} ratings)
+                ({ratingCount} ratings)
               </span>
             </span>
             <span
@@ -73,31 +82,26 @@ export function HeroSection({ manga }: HeroSectionProps) {
 
           <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
             <Link
-              href={`/manga/${manga.slug}/read`}
+              href={`/manga/${manga.slug}`}
               className="inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink px-7 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition-all hover:shadow-purple-500/50 hover:brightness-110"
             >
               <PlayIcon />
               Start Reading
             </Link>
             <Link
-              href={`/manga/${manga.slug}`}
+              href="/browse"
               className="glass glass-hover inline-flex h-12 items-center gap-2 rounded-xl px-7 text-sm font-semibold text-white"
             >
-              View Details
+              Browse Catalog
             </Link>
           </div>
         </div>
 
         <div className="relative order-1 mx-auto w-full max-w-sm lg:order-2 lg:max-w-none lg:justify-self-end">
-          <div
-            className={cn(
-              "relative mx-auto aspect-[3/4] w-56 overflow-hidden rounded-2xl bg-gradient-to-br shadow-2xl shadow-purple-500/30 sm:w-64 lg:w-72",
-              manga.coverGradient,
-            )}
-          >
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-white/5" />
-            <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
-          </div>
+          <MangaCover
+            manga={manga}
+            className="mx-auto aspect-[3/4] w-56 rounded-2xl shadow-2xl shadow-purple-500/30 sm:w-64 lg:w-72"
+          />
 
           <StatBadge
             label="Rating"
@@ -119,6 +123,12 @@ export function HeroSection({ manga }: HeroSectionProps) {
       </div>
     </section>
   );
+}
+
+function cleanDisplayText(value: string, fallback: string) {
+  const text = value.trim();
+  if (!text || text.toLowerCase() === "unknown") return fallback;
+  return text;
 }
 
 function StarIcon({ className }: { className?: string }) {

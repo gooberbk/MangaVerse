@@ -6,7 +6,7 @@ export function cn(...classes: (string | false | null | undefined)[]): string {
 
 export function formatRating(rating: MangaRating | number): string {
   const value = typeof rating === "number" ? rating : rating.average;
-  return value.toFixed(1);
+  return Number.isFinite(value) ? value.toFixed(1) : "0.0";
 }
 
 export function statusLabel(status: MangaStatus): string {
@@ -28,6 +28,8 @@ export function statusColor(status: MangaStatus): string {
 }
 
 export function formatViews(views: number): string {
+  if (!Number.isFinite(views) || views <= 0) return "0";
+
   if (views >= 1_000_000) {
     return `${(views / 1_000_000).toFixed(1)}M`;
   }
@@ -38,6 +40,8 @@ export function formatViews(views: number): string {
 }
 
 export function formatBookmarks(count: number): string {
+  if (!Number.isFinite(count) || count <= 0) return "0";
+
   if (count >= 1_000_000) {
     return `${(count / 1_000_000).toFixed(1)}M`;
   }
@@ -48,7 +52,10 @@ export function formatBookmarks(count: number): string {
 }
 
 export function formatPublishedDate(isoDate: string): string {
-  return new Date(isoDate).toLocaleDateString("en-US", {
+  const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) return "Recently";
+
+  return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -57,7 +64,8 @@ export function formatPublishedDate(isoDate: string): string {
 
 /** Rough estimate: ~90 seconds per page */
 export function formatReadTime(pageCount: number): string {
-  const minutes = Math.max(1, Math.round((pageCount * 90) / 60));
+  const safePageCount = Number.isFinite(pageCount) && pageCount > 0 ? pageCount : 1;
+  const minutes = Math.max(1, Math.round((safePageCount * 90) / 60));
   if (minutes < 60) return `${minutes} min read`;
   const hours = Math.floor(minutes / 60);
   const remainder = minutes % 60;
@@ -66,6 +74,8 @@ export function formatReadTime(pageCount: number): string {
 
 export function formatUpdatedDate(isoDate: string): string {
   const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) return "Recently";
+
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));

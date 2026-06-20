@@ -103,7 +103,8 @@ export function SiteHeader() {
                 href="/register"
                 className="rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:shadow-purple-500/40 hover:brightness-110 sm:px-4"
               >
-                Create Account
+                <span className="sm:hidden">Join</span>
+                <span className="hidden sm:inline">Create Account</span>
               </Link>
             </>
           )}

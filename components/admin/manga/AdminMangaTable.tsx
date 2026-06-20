@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { AdminBadge } from "./AdminBadge";
+import { MangaCover } from "@/components/manga/MangaCover";
 import type { Manga } from "@/types/manga";
 import { statusColor, formatViews, formatPublishedDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -64,14 +65,11 @@ export function AdminMangaTable({
                   {/* Title */}
                   <td className="px-6 py-4 text-sm">
                     <div className="flex items-center gap-3">
-                      <div
-                        className={cn(
-                          "flex h-10 w-10 items-center justify-center rounded-lg shrink-0 text-lg bg-gradient-to-br",
-                          manga.coverGradient,
-                        )}
-                      >
-                        📚
-                      </div>
+                      <MangaCover
+                        manga={manga}
+                        compact
+                        className="h-10 w-10 shrink-0 rounded-lg"
+                      />
                       <div className="min-w-0">
                         <p className="font-medium text-white truncate">
                           {manga.title}
@@ -185,14 +183,11 @@ export function AdminMangaTable({
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex gap-3 flex-1 min-w-0">
-                <div
-                  className={cn(
-                    "flex h-12 w-12 items-center justify-center rounded-lg shrink-0 text-xl bg-gradient-to-br",
-                    manga.coverGradient,
-                  )}
-                >
-                  📚
-                </div>
+                <MangaCover
+                  manga={manga}
+                  compact
+                  className="h-12 w-12 shrink-0 rounded-lg"
+                />
                 <div className="min-w-0 flex-1">
                   <h4 className="font-semibold text-white truncate">
                     {manga.title}

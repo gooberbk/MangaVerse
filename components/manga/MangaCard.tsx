@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/Badge";
+import { MangaCover } from "@/components/manga/MangaCover";
 import { cn, formatRating, statusColor, statusLabel } from "@/lib/utils";
 import type { Manga } from "@/types/manga";
 import Link from "next/link";
@@ -24,31 +25,21 @@ export function MangaCard({
         className,
       )}
     >
-      <div
-        className={cn(
-          "relative aspect-[3/4] overflow-hidden bg-gradient-to-br",
-          manga.coverGradient,
-        )}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-70 transition-opacity duration-300 group-hover:opacity-50" />
-
-        {showTrendingBadge && manga.isTrending && (
-          <div className="absolute left-2 top-2">
-            <Badge variant="trending">Trending</Badge>
+      <MangaCover manga={manga} className="aspect-[3/4]">
+        {(showTrendingBadge && manga.isTrending) || manga.isNew ? (
+          <div className="absolute left-2 top-2 flex max-w-[calc(100%-1rem)] flex-wrap gap-1">
+            {showTrendingBadge && manga.isTrending && (
+              <Badge variant="trending">Trending</Badge>
+            )}
+            {manga.isNew && <Badge variant="new">New</Badge>}
           </div>
-        )}
-
-        {manga.isNew && (
-          <div className="absolute left-2 top-2">
-            <Badge variant="new">New</Badge>
-          </div>
-        )}
+        ) : null}
 
         <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-lg bg-black/60 px-2 py-1 text-xs font-semibold backdrop-blur-sm">
           <StarIcon />
           {formatRating(manga.rating.average)}
         </div>
-      </div>
+      </MangaCover>
 
       <div className="flex flex-1 flex-col gap-2 p-3.5">
         <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-white transition-colors group-hover:text-accent-pink">
@@ -56,14 +47,16 @@ export function MangaCard({
         </h3>
 
         <div className="flex flex-wrap gap-1">
-          {manga.genres.slice(0, 2).map((genre) => (
-            <span
-              key={genre}
-              className="rounded-md bg-white/5 px-1.5 py-0.5 text-[10px] font-medium text-muted"
-            >
-              {genre}
-            </span>
-          ))}
+          {(manga.genres.length > 0 ? manga.genres.slice(0, 2) : ["Manga"]).map(
+            (genre) => (
+              <span
+                key={genre}
+                className="rounded-md bg-white/5 px-1.5 py-0.5 text-[10px] font-medium text-muted"
+              >
+                {genre}
+              </span>
+            ),
+          )}
         </div>
 
         <div className="mt-auto flex items-center justify-between pt-1">

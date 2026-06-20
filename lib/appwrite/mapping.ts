@@ -205,10 +205,10 @@ function readChapterNumber(doc: ChapterDocument, slug: string, issues: string[])
 export function mapMangaDocumentToManga(doc: MangaDocument): Manga {
   const issues: string[] = [];
   const now = new Date().toISOString();
-  const title = readRequiredString(doc.title, "Untitled Manga", "title", issues);
+  const title = readRequiredString(doc.title, "MangaVerse Series", "title", issues);
   const description = readRequiredString(
     doc.description,
-    "No description available.",
+    "Synopsis will be available soon.",
     "description",
     issues,
   );
@@ -222,8 +222,8 @@ export function mapMangaDocumentToManga(doc: MangaDocument): Manga {
     description,
     synopsis: readOptionalString(doc.synopsis, description),
     alternativeTitles: readAlternativeTitles(doc.alternativeTitles),
-    author: readOptionalString(doc.author, "Unknown"),
-    artist: readOptionalString(doc.artist, "Unknown"),
+    author: readOptionalString(doc.author, "Creator TBA"),
+    artist: readOptionalString(doc.artist, "Studio TBA"),
     coverUrl: readUrl(doc.coverUrl, SAFE_COVER_URL, "coverUrl", issues, true),
     coverGradient: readOptionalString(doc.coverGradient, SAFE_COVER_GRADIENT),
     genres: readGenres(doc.genres, issues),

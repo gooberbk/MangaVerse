@@ -32,10 +32,12 @@ export function ReaderControls({
 
       <button
         type="button"
-        className="glass glass-hover inline-flex h-9 items-center gap-2 rounded-lg px-4 text-xs font-semibold text-white transition-all sm:h-10 sm:text-sm"
+        disabled
+        title="Library saving is not connected in this MVP."
+        className="glass inline-flex h-9 cursor-not-allowed items-center gap-2 rounded-lg px-4 text-xs font-semibold text-muted opacity-70 sm:h-10 sm:text-sm"
       >
         <HeartIcon />
-        Add to Library
+        Save Unavailable
       </button>
     </div>
   );

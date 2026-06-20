@@ -32,8 +32,14 @@ export function ChapterList({
       </div>
 
       {chapters.length === 0 ? (
-        <div className="glass rounded-2xl px-6 py-12 text-center">
-          <p className="text-muted">No chapters available yet.</p>
+        <div className="glass rounded-2xl border border-white/10 px-6 py-12 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 ring-1 ring-white/10">
+            <span className="text-xl font-black text-white/70">0</span>
+          </div>
+          <h3 className="text-lg font-semibold text-white">Chapters coming soon</h3>
+          <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted">
+            This series is in the catalog, but no readable chapters are published yet.
+          </p>
         </div>
       ) : (
         <div className="space-y-2">

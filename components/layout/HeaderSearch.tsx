@@ -1,5 +1,6 @@
 "use client";
 
+import { MangaCover } from "@/components/manga/MangaCover";
 import { searchMangas } from "@/lib/search/manga";
 import { cn, formatRating } from "@/lib/utils";
 import type { Manga } from "@/types/manga";
@@ -190,18 +191,17 @@ function SearchResultItem({
           : "hover:bg-white/[0.06]",
       )}
     >
-      <div
-        className={cn(
-          "h-12 w-9 shrink-0 rounded-lg bg-gradient-to-br shadow-md ring-1 ring-white/10",
-          manga.coverGradient,
-        )}
+      <MangaCover
+        manga={manga}
+        compact
+        className="h-12 w-9 shrink-0 rounded-lg shadow-md"
       />
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-white transition-colors group-hover:text-accent-pink">
           {manga.title}
         </p>
         <p className="mt-0.5 truncate text-xs text-muted">
-          {manga.genres.slice(0, 3).join(" · ")}
+          {manga.genres.length > 0 ? manga.genres.slice(0, 3).join(" · ") : "Manga"}
         </p>
       </div>
       <div className="flex shrink-0 items-center gap-1 rounded-lg bg-white/5 px-2 py-1 text-xs font-bold text-amber-400">

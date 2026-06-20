@@ -84,6 +84,40 @@ function isNotFoundError(error: unknown) {
   );
 }
 
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "object" && error !== null && "message" in error) {
+    return String((error as { message: unknown }).message);
+  }
+  return String(error);
+}
+
+function isMissingAttributeError(error: unknown, attribute: string) {
+  return getErrorMessage(error).includes(
+    `Attribute not found in schema: ${attribute}`,
+  );
+}
+
+function readChapterDocumentNumber(doc: ChapterDocument) {
+  const value = doc.chapterNumber ?? doc.number;
+
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim().length > 0) {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+
+  if (typeof doc.slug === "string") {
+    const slugMatch = doc.slug.match(/\d+(?:\.\d+)?/);
+    if (slugMatch) {
+      const parsed = Number(slugMatch[0]);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+
+  return null;
+}
+
 export async function listMangas(): Promise<MangaDocument[]> {
   assertMangasConfigured();
 
@@ -191,6 +225,11 @@ export async function listChaptersByMangaId(mangaId: string): Promise<ChapterDoc
     
     return result.documents;
   } catch (error) {
+    if (!isMissingAttributeError(error, "chapterNumber")) {
+      console.error(`Failed to list chapters for manga "${mangaId}":`, error);
+      return [];
+    }
+
     console.warn(
       `Failed to list chapters ordered by chapterNumber for manga "${mangaId}". Retrying with number.`,
       error,
@@ -228,6 +267,11 @@ export async function listChapters(): Promise<ChapterDocument[]> {
 
     return result.documents;
   } catch (error) {
+    if (!isMissingAttributeError(error, "chapterNumber")) {
+      console.error("Failed to list chapters:", error);
+      return [];
+    }
+
     console.warn(
       "Failed to list chapters ordered by chapterNumber. Retrying with number.",
       error,
@@ -299,6 +343,19 @@ export async function getChapterByNumber(mangaId: string, chapterNumber: number)
     if (isNotFoundError(error)) {
       return null;
     }
+    if (!isMissingAttributeError(error, "chapterNumber")) {
+      console.warn(
+        `Failed to get chapter by chapterNumber "${chapterNumber}". Retrying from chapter list.`,
+        error,
+      );
+      const chapters = await listChaptersByMangaId(mangaId);
+      return (
+        chapters.find(
+          (chapter) => readChapterDocumentNumber(chapter) === chapterNumber,
+        ) ?? null
+      );
+    }
+
     console.warn(
       `Failed to get chapter by chapterNumber "${chapterNumber}". Retrying with number.`,
       error,
@@ -321,8 +378,17 @@ export async function getChapterByNumber(mangaId: string, chapterNumber: number)
     if (isNotFoundError(error)) {
       return null;
     }
-    console.error(`Failed to get chapter by number "${chapterNumber}":`, error);
-    return null;
+    if (!isMissingAttributeError(error, "number")) {
+      console.error(`Failed to get chapter by number "${chapterNumber}":`, error);
+      return null;
+    }
+
+    const chapters = await listChaptersByMangaId(mangaId);
+    return (
+      chapters.find(
+        (chapter) => readChapterDocumentNumber(chapter) === chapterNumber,
+      ) ?? null
+    );
   }
 }
 

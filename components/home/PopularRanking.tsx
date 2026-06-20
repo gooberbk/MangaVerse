@@ -1,3 +1,4 @@
+import { MangaCover } from "@/components/manga/MangaCover";
 import { cn, formatRating, formatViews } from "@/lib/utils";
 import type { Manga } from "@/types/manga";
 import Link from "next/link";
@@ -40,11 +41,10 @@ export function PopularRanking({ mangas }: PopularRankingProps) {
               {index + 1}
             </span>
 
-            <div
-              className={cn(
-                "h-14 w-10 shrink-0 rounded-lg bg-gradient-to-br shadow-md transition-transform group-hover:scale-105",
-                manga.coverGradient,
-              )}
+            <MangaCover
+              manga={manga}
+              compact
+              className="h-14 w-10 shrink-0 rounded-lg shadow-md transition-transform group-hover:scale-105"
             />
 
             <div className="min-w-0 flex-1">
