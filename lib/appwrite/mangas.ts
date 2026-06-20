@@ -4,45 +4,51 @@ import {
   APPWRITE_COLLECTIONS,
   APPWRITE_DATABASE_ID,
 } from "./config";
-import type { MangaStatus, MangaDemographic, MangaGenre, MangaRating } from "@/types/manga";
 
 export type MangaDocument = Models.Document & {
-  slug: string;
-  title: string;
-  description: string;
-  synopsis: string;
-  alternativeTitles: string[];
-  author: string;
-  artist: string;
-  coverGradient: string;
-  genres: MangaGenre[];
-  status: MangaStatus;
-  demographic: MangaDemographic;
-  language: string;
-  releaseYear: number;
-  rating: MangaRating;
-  views: number;
-  totalBookmarks: number;
-  chapterCount: number;
-  isTrending: boolean;
-  isNew: boolean;
-  isFeatured: boolean;
+  slug?: unknown;
+  title?: unknown;
+  description?: unknown;
+  synopsis?: unknown;
+  alternativeTitles?: unknown;
+  author?: unknown;
+  artist?: unknown;
+  coverUrl?: unknown;
+  coverGradient?: unknown;
+  genres?: unknown;
+  status?: unknown;
+  demographic?: unknown;
+  language?: unknown;
+  releaseYear?: unknown;
+  rating?: unknown;
+  views?: unknown;
+  totalBookmarks?: unknown;
+  chapterCount?: unknown;
+  isTrending?: unknown;
+  isNew?: unknown;
+  isFeatured?: unknown;
 };
 
 export type ChapterDocument = Models.Document & {
-  mangaId: string;
-  slug: string;
-  number: number;
-  title: string;
-  publishedAt: string;
-  pageCount: number;
+  mangaId?: unknown;
+  slug?: unknown;
+  number?: unknown;
+  chapterNumber?: unknown;
+  title?: unknown;
+  publishedAt?: unknown;
+  pageCount?: unknown;
+  isPublished?: unknown;
 };
 
 export type ChapterPageDocument = Models.Document & {
-  chapterId: string;
-  pageNumber: number;
-  imageUrl?: string;
-  alt?: string;
+  chapterId?: unknown;
+  mangaId?: unknown;
+  pageNumber?: unknown;
+  imageUrl?: unknown;
+  storageFileId?: unknown;
+  width?: unknown;
+  height?: unknown;
+  alt?: unknown;
 };
 
 const assertMangasConfigured = () => {
@@ -179,10 +185,28 @@ export async function listChaptersByMangaId(mangaId: string): Promise<ChapterDoc
       APPWRITE_COLLECTIONS.chapters,
       [
         Query.equal("mangaId", mangaId),
-        Query.orderDesc("number"),
+        Query.orderDesc("chapterNumber"),
       ],
     );
     
+    return result.documents;
+  } catch (error) {
+    console.warn(
+      `Failed to list chapters ordered by chapterNumber for manga "${mangaId}". Retrying with number.`,
+      error,
+    );
+  }
+
+  try {
+    const result = await databases.listDocuments<ChapterDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.chapters,
+      [
+        Query.equal("mangaId", mangaId),
+        Query.orderDesc("number"),
+      ],
+    );
+
     return result.documents;
   } catch (error) {
     console.error(`Failed to list chapters for manga "${mangaId}":`, error);
@@ -229,10 +253,32 @@ export async function getChapterByNumber(mangaId: string, chapterNumber: number)
       APPWRITE_COLLECTIONS.chapters,
       [
         Query.equal("mangaId", mangaId),
-        Query.equal("number", chapterNumber),
+        Query.equal("chapterNumber", chapterNumber),
       ],
     );
     
+    const chapter = result.documents[0] || null;
+    return chapter;
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      return null;
+    }
+    console.warn(
+      `Failed to get chapter by chapterNumber "${chapterNumber}". Retrying with number.`,
+      error,
+    );
+  }
+
+  try {
+    const result = await databases.listDocuments<ChapterDocument>(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_COLLECTIONS.chapters,
+      [
+        Query.equal("mangaId", mangaId),
+        Query.equal("number", chapterNumber),
+      ],
+    );
+
     const chapter = result.documents[0] || null;
     return chapter;
   } catch (error) {

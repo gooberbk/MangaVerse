@@ -5,7 +5,8 @@ export type MangaDemographic =
   | "Seinen"
   | "Shōjo"
   | "Josei"
-  | "Kodomo";
+  | "Kodomo"
+  | "Unknown";
 
 export type MangaGenre =
   | "Action"
@@ -43,6 +44,7 @@ export type Manga = {
   alternativeTitles: string[];
   author: string;
   artist: string;
+  coverUrl?: string;
   coverGradient: string;
   genres: MangaGenre[];
   status: MangaStatus;
