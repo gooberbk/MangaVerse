@@ -9,7 +9,9 @@ type ReaderPreferencesPanelProps = {
 
 export function ReaderPreferencesPanel({ className }: ReaderPreferencesPanelProps) {
   return (
-    <div className={cn("glass rounded-2xl p-6 shadow-lg shadow-black/20 sm:p-8", className)}>
+    <div className={cn("glass-panel rounded-2xl p-6 sm:p-8", className)}>
+      {/* Glow accent */}
+      <div className="pointer-events-none absolute -left-10 -bottom-10 h-28 w-28 rounded-full bg-accent-electric/10 blur-3xl" />
       <div className="mb-6">
         <h2 className="text-xl font-bold text-white">Reader Preferences</h2>
         <p className="mt-1 text-sm text-muted">
@@ -23,7 +25,7 @@ export function ReaderPreferencesPanel({ className }: ReaderPreferencesPanelProp
           <label className="block text-sm font-medium text-white">
             Default Reading Mode
           </label>
-          <select className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white transition-colors focus:border-accent-purple/50 focus:outline-none focus:ring-2 focus:ring-accent-purple/20">
+          <select className="select-premium">
             <option value="vertical">Vertical Scroll</option>
             <option value="paged">Paged (Webtoon)</option>
             <option value="single">Single Page</option>
@@ -35,7 +37,7 @@ export function ReaderPreferencesPanel({ className }: ReaderPreferencesPanelProp
           <label className="block text-sm font-medium text-white">
             Default Page Width
           </label>
-          <select className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white transition-colors focus:border-accent-purple/50 focus:outline-none focus:ring-2 focus:ring-accent-purple/20">
+          <select className="select-premium">
             <option value="fit">Fit to Screen</option>
             <option value="wide">Wide</option>
             <option value="full">Full Width</option>
@@ -47,7 +49,7 @@ export function ReaderPreferencesPanel({ className }: ReaderPreferencesPanelProp
           <label className="block text-sm font-medium text-white">
             Theme Preference
           </label>
-          <select className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white transition-colors focus:border-accent-purple/50 focus:outline-none focus:ring-2 focus:ring-accent-purple/20">
+          <select className="select-premium">
             <option value="dark">Dark</option>
             <option value="light">Light</option>
             <option value="oled">OLED Black</option>

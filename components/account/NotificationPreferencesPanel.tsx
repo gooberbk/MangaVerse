@@ -9,7 +9,9 @@ type NotificationPreferencesPanelProps = {
 
 export function NotificationPreferencesPanel({ className }: NotificationPreferencesPanelProps) {
   return (
-    <div className={cn("glass rounded-2xl p-6 shadow-lg shadow-black/20 sm:p-8", className)}>
+    <div className={cn("glass-panel rounded-2xl p-6 sm:p-8", className)}>
+      {/* Glow accent */}
+      <div className="pointer-events-none absolute -right-10 -bottom-10 h-28 w-28 rounded-full bg-accent-pink/10 blur-3xl" />
       <div className="mb-6">
         <h2 className="text-xl font-bold text-white">Notification Preferences</h2>
         <p className="mt-1 text-sm text-muted">
